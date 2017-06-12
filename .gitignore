@@ -18,3 +18,5 @@ build/
 tests/report/
 db.sqlite3
 .idea
+*.css
+*.css.map

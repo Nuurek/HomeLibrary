@@ -1,0 +1,24 @@
+@import "components/color.scss";
+@import "components/variables";
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background: color("grey", "lighten-5");
+}
+
+.input-field input[type=date]:focus + label,
+.input-field input[type=text]:focus + label,
+.input-field input[type=email]:focus + label,
+.input-field input[type=password]:focus + label {
+  color: $secondary-color;
+}
+
+.input-field input[type=date]:focus,
+.input-field input[type=text]:focus,
+.input-field input[type=email]:focus,
+.input-field input[type=password]:focus {
+  border-bottom: 2px solid $secondary-color;
+  box-shadow: none;
+}
