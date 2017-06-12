@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static "css/accounts.css" %}">
+{% endblock %}
+
+{% block content %}
+	<div class="section z-depth-1">
+		<h1 class="title">{% block subtitle %}Home Library{% endblock %}</h1>
+	</div>
+
+  <div class="section">
+    <div class="row accounts-page">
+	    <h5 class="header">{% block header %}{% endblock %}</h5>
+
+	    <div class="col s12 m10 offset-m1 xl4 offset-xl4">
+	      {% block form %}{% endblock %}
+	    </div>
+    </div>
+  </div>
+{% endblock %}

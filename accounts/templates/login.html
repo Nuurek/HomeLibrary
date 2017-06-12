@@ -1,50 +1,38 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "account_base.html" %}
 
-{% block stylesheets %}
-	<link rel="stylesheet" href="{% static "css/accounts.css" %}">
-{% endblock %}
 
-{% block content %}
-	<div class="section z-depth-1">
-		<h1 class="title">Home Library</h1>
-	</div>
+{% block header %}Please, login into your library{% endblock %}
 
-  <div class="section accounts-page">
-    <h5 class="header">Please, login into your library</h5>
-
-    <div class="form row z-depth-1">
-      <form class="col s12" method="post">
-        <div class='row'>
-          <div class='col s12'>
-          </div>
-        </div>
-
-        <div class='row'>
-          <div class='input-field col s12'>
-            <input class='validate' type='email' name='email' id='email' />
-            <label for='email'>Enter your email</label>
-          </div>
-        </div>
-
-        <div class='row'>
-          <div class='input-field col s12'>
-            <input class='validate' type='password' name='password' id='password' />
-            <label for='password'>Enter your password</label>
-          </div>
-          <label class="tip">
-	          <a href="#">Forget password?</a>
-          </label>
-        </div>
-
-        <div class='row'>
-          <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Login</button>
-        </div>
-
-	      <div class="row">
-          <a href="#">Create account</a>
-	      </div>
-      </form>
+{% block form %}
+  <form class="col s12 form z-depth-1" method="post">
+    <div class='row'>
+      <div class='col s12'>
+      </div>
     </div>
-  </div>
+
+    <div class='row'>
+      <div class='input-field col s12'>
+        <input class='validate' type='email' name='email' id='email' />
+        <label for='email'>Enter your email</label>
+      </div>
+    </div>
+
+    <div class='row'>
+      <div class='input-field col s12'>
+        <input class='validate' type='password' name='password' id='password' />
+        <label for='password'>Enter your password</label>
+      </div>
+      <label class="tip">
+        <a href="#">Forget password?</a>
+      </label>
+    </div>
+
+    <div class='row'>
+      <button type='submit' name='btn_login' class='col s12 btn btn-large waves-effect'>Login</button>
+    </div>
+
+    <div class="row">
+      <a href="{% url 'sign_up' %}">Create account</a>
+    </div>
+  </form>
 {% endblock %}
