@@ -7,7 +7,7 @@
 
 {% block content %}
 	<div class="section z-depth-1">
-		<h2 class="title">{{ library_name }}</h2>
-		<a href="{% url 'library_update' %}" class="btn btn-floating pulse"><i class="material-icons">edit</i></a>
+		<h2 class="title">{{ library.name }}</h2>
+		<a href="{% url 'library_update' %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
 	</div>
 {% endblock %}

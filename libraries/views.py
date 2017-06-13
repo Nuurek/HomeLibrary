@@ -11,7 +11,7 @@ class LibraryView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['library_name'] = self.request.user.library.name
+        context['library'] = self.request.user.library
         return context
 
 
@@ -22,3 +22,10 @@ class LibraryUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.library
+
+    def form_valid(self, form):
+        library = self.request.user.library
+        library.is_name_default = False
+        library.save()
+        return super().form_valid(form)
+
