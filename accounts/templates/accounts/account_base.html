@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static "css/accounts.css" %}">
+{% endblock %}
+
+{% block content %}
+  <div class="section">
+    <div class="row accounts-page">
+	    <h5 class="header">{% block header %}{% endblock %}</h5>
+
+      {% block accounts_content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}

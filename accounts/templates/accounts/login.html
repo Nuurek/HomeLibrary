@@ -1,0 +1,44 @@
+{% extends "accounts/account_base.html" %}
+{% load widget_tweaks %}
+
+{% block header %}Please, login into your library{% endblock %}
+
+{% block accounts_content %}
+  <div class="col s12 m10 offset-m1 xl4 offset-xl4">
+	  <form class="col s12 form z-depth-1" method="post">
+		  {% csrf_token %}
+
+	    <div class='row'>
+	      <div class='input-field col s12'>
+	        {{ form.username | attr:'class:validate' }}
+	        <label for='{{ form.username.name }}'>{{ form.username.label }}</label>
+		      {% for error in form.username.errors %}
+			      <p class="red-text center-align">{{ error }}</p>
+		      {% endfor %}
+	      </div>
+	    </div>
+
+	    <div class='row'>
+	      <div class='input-field col s12'>
+	        {{ form.password | attr:'class:validate' }}
+	        <label for='{{ form.password.name }}'>{{ form.password.label }}</label>
+		      {% for error in form.password.errors %}
+			      <p class="red-text center-align">{{ error }}</p>
+		      {% endfor %}
+	      </div>
+	      <label class="tip">
+		      <!-- TODO: Forgotten password form -->
+	        <a href="#">Forget password?</a>
+	      </label>
+	    </div>
+
+	    <div class='row'>
+	      <button type='submit' class='col s12 btn btn-large waves-effect'>Login</button>
+	    </div>
+
+	    <div class="row">
+	      <a href="{% url 'sign_up' %}">Create account</a>
+	    </div>
+	  </form>
+  </div>
+{% endblock %}
