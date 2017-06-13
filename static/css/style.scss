@@ -6,6 +6,10 @@ body {
   min-height: 100vh;
   flex-direction: column;
   background: color("grey", "lighten-5");
+
+  .nav-wrapper {
+    padding: 0 2vw;
+  }
 }
 
 .input-field input[type=date]:focus + label,

@@ -1,21 +1,30 @@
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, RedirectView
 from django.urls import reverse_lazy
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from .forms import SignUpForm
 from .models import UserProfile
 
 
 class LoginView(TemplateView):
-    template_name = 'login.html'
+    template_name = 'accounts/login.html'
+
+
+class LogoutView(RedirectView):
+    url = reverse_lazy('log_in')
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return super().get(request, *args, **kwargs)
 
 
 class SignUpView(FormView):
-    template_name = 'signup.html'
+    template_name = 'accounts/signup.html'
     form_class = SignUpForm
     success_url = reverse_lazy('mail_sent')
 
@@ -38,7 +47,7 @@ class SignUpView(FormView):
 
 
 class ConfirmationView(TemplateView):
-    template_name = 'confirmation.html'
+    template_name = 'accounts/confirmation.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -14,7 +14,7 @@ class UserProfile(models.Model):
 
     def send_confirmation_code(self, domain):
         subject = "Home Library Email Verification"
-        message = render_to_string("confirmation_mail.html", {
+        message = render_to_string("accounts/confirmation_mail.html", {
             'domain': domain,
             'username': self.user.username,
             'link': reverse('confirmation', kwargs={

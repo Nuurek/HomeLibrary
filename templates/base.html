@@ -12,6 +12,22 @@
     {% block stylesheets %}{% endblock %}
   </head>
   <body>
+    <div class="navbar-fixed">
+		  <nav>
+		    <div class="nav-wrapper z-depth-1">
+		      <a href="{% url 'home' %}" class="brand-logo"><i class="material-icons left">library_books</i>Home Library</a>
+		      <ul id="nav-mobile" class="right hide-on-med-and-down">
+			      {% if user.is_authenticated %}
+						<li><a href="{% url 'logout' %}" class="waves-effect waves-light btn z-depth-2">Log out</a></li>
+			      {% else %}
+		        <li><a href="{% url 'sign_up' %}" class="waves-effect waves-light btn z-depth-2">Sign up</a></li>
+			      <li>Already have an account?</li>
+		        <li><a href="{% url 'login' %}" class="waves-effect waves-light btn z-depth-2">Log in</a></li>
+			      {% endif %}
+		      </ul>
+		    </div>
+		  </nav>
+    </div>
     <div class="container center-align">
       {% block content %}{% endblock %}
     </div>
