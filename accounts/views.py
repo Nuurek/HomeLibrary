@@ -11,18 +11,6 @@ from .forms import SignUpForm
 from .models import UserProfile
 
 
-class LoginView(TemplateView):
-    template_name = 'accounts/login.html'
-
-
-class LogoutView(RedirectView):
-    url = reverse_lazy('log_in')
-
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return super().get(request, *args, **kwargs)
-
-
 class SignUpView(FormView):
     template_name = 'accounts/signup.html'
     form_class = SignUpForm

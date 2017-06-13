@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static 'css/libraries/style.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="section">
+		<form method="post">
+			{% csrf_token %}
+			<div class="row">
+	      <div class="input-field col s8 offset-s2">
+	        {{ form.name | attr:'data-length:40' }}
+	        <label for="{{ form.name.name }}">{{ form.name.label }}</label>
+	      </div>
+	    </div>
+
+      <button type='submit' class='btn waves-effect waves-light z-depth-1'>Save</button>
+		</form>
+	</div>
+{% endblock %}

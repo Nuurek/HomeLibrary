@@ -1,4 +1,4 @@
-{% extends "accounts/account_base.html" %}
+{% extends "accounts/base.html" %}
 {% load widget_tweaks %}
 
 {% block header %}Please, login into your library{% endblock %}
@@ -26,14 +26,14 @@
 			      <p class="red-text center-align">{{ error }}</p>
 		      {% endfor %}
 	      </div>
-	      <label class="tip">
+	      <label class="right">
 		      <!-- TODO: Forgotten password form -->
 	        <a href="#">Forget password?</a>
 	      </label>
 	    </div>
 
 	    <div class='row'>
-	      <button type='submit' class='col s12 btn btn-large waves-effect'>Login</button>
+	      <button type='submit' class='col s12 btn btn-large waves-effect z-depth-2'>Login</button>
 	    </div>
 
 	    <div class="row">

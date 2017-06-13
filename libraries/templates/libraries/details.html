@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{% static 'css/libraries/style.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="section z-depth-1">
+		<h2 class="title">{{ library_name }}</h2>
+		<a href="{% url 'library_update' %}" class="btn btn-floating pulse"><i class="material-icons">edit</i></a>
+	</div>
+{% endblock %}
