@@ -1,21 +1,32 @@
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import FormView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Library
+from .models import Library, Invitation
+from .forms import SendInvitationForm
 
 
-class LibraryView(LoginRequiredMixin, TemplateView):
+class LibraryDetailsView(LoginRequiredMixin, FormView):
     template_name = 'libraries/details.html'
+    form_class = SendInvitationForm
     login_url = reverse_lazy('login')
+    success_url = reverse_lazy('library_details')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['library'] = self.request.user.library
+        library = self.request.user.library
+        context['library'] = library
+        context['invitations'] = Invitation.objects.filter(library=library)
         return context
 
+    def form_valid(self, form):
+        invitation = Invitation(library=self.request.user.library, email=form.cleaned_data['email'])
+        print(invitation)
+        invitation.save()
+        return super().form_valid(form)
 
-class LibraryUpdateView(LoginRequiredMixin, UpdateView):
+
+class LibraryNameUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'libraries/update.html'
     model = Library
     fields = ('name', )

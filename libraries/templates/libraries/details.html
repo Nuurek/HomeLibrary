@@ -1,13 +1,69 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'libraries/base.html' %}
+{% load widget_tweaks %}
 
-{% block stylesheets %}
-	<link rel="stylesheet" href="{% static 'css/libraries/style.css' %}">
-{% endblock %}
 
 {% block content %}
 	<div class="section z-depth-1">
 		<h2 class="title">{{ library.name }}</h2>
-		<a href="{% url 'library_update' %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
+		<a href="{% url 'library_name_update' %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
+	</div>
+
+	<div class="divider"></div>
+
+	<div class="section">
+		<div class="row">
+			<div class="col s12 l6 offset-l3 xl4 offset-xl4">
+				<h4>Users</h4>
+				<ul class="collection">
+					<li class="collection-item active">
+						<div>
+							<b>{{ user.username }}</b>
+							<i class="material-icons secondary-content">supervisor_account</i>
+						</div>
+					</li>
+					<li class="collection-item">
+						<div>
+							active-user
+							<a href="#" class="secondary-content"><i class="material-icons">not_interested</i></a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<div class="row">
+			{% if invitations %}
+				<div class="col s12 l6 offset-l3 xl4 offset-xl4">
+					<h4>Invitations</h4>
+					<ul class="collection">
+						{% for invitation in invitations %}
+						<li class="collection-item">
+							<div>
+								{{ invitation.email }}
+								<a href="#" class="secondary-content"><i class="material-icons">not_interested</i></a>
+							</div>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% else %}
+				<div class="col s10 offset-s1 l8 offset-l2">
+					<h4>Invite someone to your library</h4>
+				</div>
+			{% endif %}
+
+			<form method="post">
+				{% csrf_token %}
+				<div class="row">
+					<div class="input-field col s10 offset-s1 l6 offset-l3 xl4 offset-xl4">
+						{{ form.email | attr:'class:validate' }}
+		        <label for="{{ form.email.name }}">{{ form.email.label }}</label>
+					</div>
+				</div>
+				<button type='submit' class='btn waves-effect waves-light z-depth-1'>Invite</button>
+			</form>
+		</div>
 	</div>
 {% endblock %}

@@ -10,6 +10,18 @@ body {
   .nav-wrapper {
     padding: 0 2vw;
   }
+
+  .primary-color-text {
+    color: $primary-color;
+  }
+
+  .primary-color-dark-text {
+    color: $primary-color-dark;
+  }
+
+  .primary-color-light-text {
+    color: $primary-color-light;
+  }
 }
 
 .input-field input[type=date]:focus + label,

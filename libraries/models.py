@@ -16,4 +16,15 @@ class Library(models.Model):
         return reverse('library_details')
 
     def __str__(self):
-        return self.name + ' of the ' + self.owner.username
+        return self.name + " of the " + self.owner.username
+
+
+class Invitation(models.Model):
+    library = models.ForeignKey(Library, on_delete=models.CASCADE)
+    email = models.EmailField(null=False)
+
+    class Meta:
+        unique_together = ('library', 'email')
+
+    def __str__(self):
+        return "Invitation to " + self.library.name + " for " + self.email

@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import LibraryView, LibraryUpdateView
+from .views import LibraryDetailsView, LibraryNameUpdateView
 
 
 urlpatterns = [
-    url(r'^details$', LibraryView.as_view(), name='library_details'),
-    url(r'^update', LibraryUpdateView.as_view(), name='library_update'),
+    url(r'^details$', LibraryDetailsView.as_view(), name='library_details'),
+    url(r'^update', LibraryNameUpdateView.as_view(), name='library_name_update'),
 ]
