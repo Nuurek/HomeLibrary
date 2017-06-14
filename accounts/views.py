@@ -1,6 +1,5 @@
 from django.views.generic import TemplateView, FormView, RedirectView
 from django.urls import reverse_lazy
-from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
@@ -9,6 +8,7 @@ from datetime import timedelta
 
 from .forms import SignUpForm
 from .models import UserProfile
+from libraries.models import Library
 
 
 class SignUpView(FormView):
@@ -17,8 +17,7 @@ class SignUpView(FormView):
     success_url = reverse_lazy('mail_sent')
 
     def form_valid(self, form):
-        user: User = form.save()
-        user.set_password(user.password)
+        user: User = form.save(commit=False)
         user.is_active = False
         user.save()
         user_profile = UserProfile(
@@ -46,6 +45,7 @@ class ConfirmationView(TemplateView):
             time_difference = timezone.now() - user_profile.registration_time
             if time_difference < timedelta(hours=24):
                 user_profile.activate_user()
+                Library.objects.create(owner=user_profile).save()
                 context['success'] = True
                 context['username'] = user_profile.user.username
             else:

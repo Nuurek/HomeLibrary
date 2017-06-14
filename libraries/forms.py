@@ -7,4 +7,4 @@ class SendInvitationForm(forms.ModelForm):
 
     class Meta:
         model = Invitation
-        fields = ('email',)
+        fields = ('email', )

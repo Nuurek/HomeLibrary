@@ -1,0 +1,16 @@
+{% extends 'libraries/base.html' %}
+
+{% block content %}
+	<section>
+		<div class="divider"></div>
+		{% if success %}
+			<h1>Welcome to {{ library.name }}</h1>
+			<h3 class="text-accent-1">You has been added as an active user</h3>
+			<div class="divider"></div>
+			<a href="#">Go to the library page</a>
+		{% else %}
+			<h3 class="red-text">This link is invalid!</h3>
+			<div class="divider"></div>
+		{% endif %}
+	</section>
+{% endblock %}

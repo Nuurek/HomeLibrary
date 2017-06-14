@@ -4,10 +4,9 @@
 	<section>
 		<div class="divider"></div>
 		{% if success %}
-			<h1>Hello {{ user }}</h1>
+			<h1>Hello {{ username }}</h1>
 			<h3 class="text-accent-1">Your email has been confirmed</h3>
-			<div class="divider"></div>
-			<a href="{% url 'login' %}">Login</a>
+			<a href="{% url 'login' %}" class="waves-effect waves-light btn btn-large z-depth-1">Log in</a>
 		{% else %}
 			<h3 class="red-text">This link is invalid!</h3>
 			<div class="divider"></div>

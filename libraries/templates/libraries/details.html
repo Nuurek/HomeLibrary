@@ -21,12 +21,14 @@
 							<i class="material-icons secondary-content">supervisor_account</i>
 						</div>
 					</li>
-					<li class="collection-item">
-						<div>
-							active-user
-							<a href="#" class="secondary-content"><i class="material-icons">not_interested</i></a>
-						</div>
-					</li>
+					{% for guest in guests %}
+						<li class="collection-item">
+							<div>
+								{{ guest.user.username }}
+								<a href="#" class="secondary-content"><i class="material-icons">not_interested</i></a>
+							</div>
+						</li>
+					{% endfor %}
 				</ul>
 			</div>
 		</div>
