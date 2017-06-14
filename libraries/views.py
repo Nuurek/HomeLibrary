@@ -1,4 +1,4 @@
-from django.views.generic import FormView, UpdateView, TemplateView
+from django.views.generic import FormView, UpdateView, TemplateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
@@ -66,3 +66,8 @@ class InvitationConfirmationView(TemplateView):
             context['success'] = False
 
         return context
+
+
+class InvitationDeleteView(DeleteView):
+    model = Invitation
+    success_url = reverse_lazy('library_details')

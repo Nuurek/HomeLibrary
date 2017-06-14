@@ -8,10 +8,10 @@ from accounts.models import UserProfile
 
 
 class Library(models.Model):
-    name = models.CharField(max_length=40, null=False)
+    name = models.CharField(max_length=40, null=False, default="Home Library")
     is_name_default = models.BooleanField(default=True)
     owner = models.OneToOneField(UserProfile, on_delete=models.CASCADE, primary_key=True, related_name='home_library')
-    users = models.ManyToManyField(UserProfile, related_name='libraries')
+    users = models.ManyToManyField(UserProfile, related_name='libraries', blank=True)
 
     class Meta:
         verbose_name_plural = 'libraries'

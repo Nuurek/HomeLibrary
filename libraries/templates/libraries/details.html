@@ -44,7 +44,7 @@
 						<li class="collection-item">
 							<div>
 								{{ invitation.email }}
-								<a href="#" class="secondary-content"><i class="material-icons">not_interested</i></a>
+								<a href="{% url 'invitation_delete' invitation.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
 							</div>
 						</li>
 						{% endfor %}
