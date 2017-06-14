@@ -1,0 +1,21 @@
+{% extends 'libraries/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="section">
+	<div class="row">
+		<form method="post" class="col s12 l6 offset-l3 xl4 offset-xl4">
+			{% csrf_token %}
+			<p class="center-align">Are you sure you want to revoke the access for <b>{{ object.user.username }}</b> ?</p>
+			<div class="row">
+				<div class="col s6">
+					<a href="{% url 'library_details' %}" class='btn waves-effect waves-light z-depth-1'>Return</a>
+				</div>
+				<div class="col s6">
+					<button type='submit' class='btn waves-effect waves-light z-depth-1'>Confirm</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

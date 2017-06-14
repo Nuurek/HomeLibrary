@@ -4,9 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.crypto import get_random_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect
 
 from .models import Library, Invitation
 from .forms import SendInvitationForm
+from accounts.models import UserProfile
 
 
 class LibraryDetailsView(LoginRequiredMixin, FormView):
@@ -71,3 +73,16 @@ class InvitationConfirmationView(TemplateView):
 class InvitationDeleteView(DeleteView):
     model = Invitation
     success_url = reverse_lazy('library_details')
+
+
+class GuestDeleteView(DeleteView):
+    model = UserProfile
+    success_url = reverse_lazy('library_details')
+    template_name = 'libraries/guest_confirm_delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        library = self.request.user.userprofile.home_library
+        library.users.remove(self.object)
+        return HttpResponseRedirect(success_url)
