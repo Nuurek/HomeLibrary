@@ -1,13 +1,13 @@
 {% extends "accounts/base.html" %}
 {% load widget_tweaks %}
 
-{% block header %}Please, login into your library{% endblock %}
 
 {% block accounts_content %}
   <div class="col s12 m10 offset-m1 xl4 offset-xl4">
 	  <form class="col s12 form z-depth-1" method="post">
 		  {% csrf_token %}
 
+	    <h4>Please, login into your library</h4>
 	    <div class='row'>
 	      <div class='input-field col s10 offset-s1'>
 	        {{ form.username | attr:'class:validate' }}
