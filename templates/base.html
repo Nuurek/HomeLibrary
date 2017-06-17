@@ -13,13 +13,17 @@
   </head>
   <body>
     <div class="navbar-fixed">
+      <ul id="libraries-dropdown" class="dropdown-content">
+        <li><a href="{% url 'home' %}">Your library</a></li>
+	      <li><a href="{% url 'library_list' %}">Other</a></li>
+      </ul>
 		  <nav>
 		    <div class="nav-wrapper z-depth-1">
 		      <a href="{% url 'home' %}" class="brand-logo"><i class="material-icons left">library_books</i>Home Library</a>
 		      <ul id="nav-mobile" class="right hide-on-med-and-down">
 			      {% if user.is_authenticated %}
-				      <li><a href="{% url 'library_list' %}" class="waves-effect waves-light btn z-depth-2">Libraries</a></li>
-				      <li><a href="{% url 'library_management' %}" class="waves-effect waves-light btn z-depth-2">Manage</a></li>
+	            <li><a class="dropdown-button" data-activates="libraries-dropdown">Library<i class="material-icons right">arrow_drop_down</i></a></li>
+				      <li><a href="{% url 'library_management' %}">Manage</a></li>
 							<li><a href="{% url 'logout' %}" class="waves-effect waves-light btn z-depth-2">Log out</a></li>
 			      {% else %}
 			        <li><a href="{% url 'sign_up' %}" class="waves-effect waves-light btn z-depth-2">Sign up</a></li>
