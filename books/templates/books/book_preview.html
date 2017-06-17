@@ -1,16 +1,21 @@
 {% extends 'books/base.html' %}
+{% load widget_tweaks %}
+
 
 {% block content %}
 	<div class="section">
 		<div class="row">
+			<h4>Confirm the new book</h4>
+		</div>
+		<div class="row">
 			<div class="col s12 xl8 offset-xl2">
-				<div class="card horizontal book-card">
+				<div class="card horizontal book-card z-depth-1">
 			    <div class="card-image waves-effect waves-block waves-light">
-			      <img class="activator" src="{{ book.cover }}">
+			      <img class="activator z-depth-2" src="{{ book.cover }}">
 			    </div>
 			    <div class="card-stacked">
 				    <div class="card-content">
-		          <span class="col card-title grey-text text-darken-4">
+		          <span class="card-title grey-text text-darken-4">
 					      {{ book.title }}
 				      </span>
 				      <p>Author: {{ book.author }}</p>
@@ -18,7 +23,7 @@
 		        <div class="card-action">
 			        <span>{{ book.description | truncatewords:20}}</span>
 			        <div>
-				        <a class="btn-floating activator btn waves-effect waves-light"><i class="material-icons">description</i></a>
+				        <a class="btn-floating activator btn waves-effect waves-light"><i class="material-icons z-depth-2">description</i></a>
 			        </div>
 		        </div>
 			    </div>
@@ -36,7 +41,17 @@
 		</div>
 
 		<div class="row">
-
+			<div class="section">
+				<div class="col s6 m2 offset-m4">
+				  <a href="{% url 'book_create' %}" class="btn-floating btn-large waves-effect waves-light red z-depth-1">
+					  <i class="material-icons">mode_edit</i>
+				  </a>
+				</div>
+				<form method="post" class="col s6 m2">
+					{% csrf_token %}
+					<button type="submit" class="btn-floating btn-large waves-effect waves-light green z-depth-1"><i class="material-icons">thumb_up</i></button>
+				</form>
+			</div>
 		</div>
 	</div>
 

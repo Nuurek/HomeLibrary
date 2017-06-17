@@ -51,7 +51,6 @@
 				      {% endfor %}
 				    </div>
 					</div>
-					<!--
 					<div class="row">
 						<div class="file-field input-field col s12 xl10 offset-xl1">
 				      <div class="btn">
@@ -66,19 +65,6 @@
 				      {% endfor %}
 				    </div>
 					</div>
-					-->
-
-					<div class="row">
-						<div class='input-field col s12 xl10 offset-xl1'>
-							<i class="material-icons prefix">view_column</i>
-							{% render_field form.cover class+="validate materialize-textarea" %}
-				      <label for='{{ form.cover.name }}'>{{ form.cover.label }}</label>
-				      {% for error in form.cover.errors %}
-					      <p class="red-text center-align">{{ error }}</p>
-				      {% endfor %}
-				    </div>
-					</div>
-
 					<div class="row">
 						<button type="submit" class="btn-large">Save the book</button>
 					</div>
