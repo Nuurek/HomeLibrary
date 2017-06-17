@@ -1,0 +1,43 @@
+{% extends 'books/base.html' %}
+
+{% block content %}
+	<div class="section">
+		<div class="row">
+			<div class="col s12 xl8 offset-xl2">
+				<div class="card horizontal book-card">
+			    <div class="card-image waves-effect waves-block waves-light">
+			      <img class="activator" src="{{ book.cover }}">
+			    </div>
+			    <div class="card-stacked">
+				    <div class="card-content">
+		          <span class="col card-title grey-text text-darken-4">
+					      {{ book.title }}
+				      </span>
+				      <p>Author: {{ book.author }}</p>
+		        </div>
+		        <div class="card-action">
+			        <span>{{ book.description | truncatewords:20}}</span>
+			        <div>
+				        <a class="btn-floating activator btn waves-effect waves-light"><i class="material-icons">description</i></a>
+			        </div>
+		        </div>
+			    </div>
+			    <div class="card-reveal">
+			      <span class="card-title grey-text text-darken-4">{{ book.title }}<i class="material-icons right">close</i></span>
+				    <p>Author: {{ book.author }}</p>
+			      <p>{{ book.description }}</p>
+			    </div>
+					{% if book.ebook_link %}
+						<p>Ebook available on:</p>
+						<a href="{{ book.ebook_link }}">Google Books</a>
+					{% endif %}
+			  </div>
+			</div>
+		</div>
+
+		<div class="row">
+
+		</div>
+	</div>
+
+{% endblock %}

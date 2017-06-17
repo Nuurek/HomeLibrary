@@ -1,5 +1,26 @@
+@import "../../../../static/css/components/color";
+@import "../../../../static/css/components/variables";
+
 #add-book-buttons {
   a {
     width: 100%;
   }
+}
+
+@media #{$medium-and-up} {
+  .book-card {
+    height: 300px;
+
+    .card-image {
+      height: inherit;
+
+      img {
+        height: inherit;
+      }
+    }
+  }
+}
+
+@media #{$small-and-down} {
+
 }
