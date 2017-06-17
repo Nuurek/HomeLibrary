@@ -6,8 +6,10 @@
 	<div class="section">
 		<div class="row">
 			<div class="col s12 xl6 offset-xl3">
-				<form class="col s12 z-depth-1" action="">
-							<h4 class="header">Fill in the book details</h4>
+				<form method="post" class="col s12 z-depth-1" action="" enctype="multipart/form-data">
+					{% csrf_token %}
+
+					<h4 class="header">Fill in the book details</h4>
 
 					<div class="row">
 						<div class='input-field col s12 xl10 offset-xl1'>
@@ -49,6 +51,7 @@
 				      {% endfor %}
 				    </div>
 					</div>
+					<!--
 					<div class="row">
 						<div class="file-field input-field col s12 xl10 offset-xl1">
 				      <div class="btn">
@@ -59,6 +62,18 @@
 				        <input class="file-path validate" type="text">
 				      </div>
 							{% for error in form.cover.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+					-->
+
+					<div class="row">
+						<div class='input-field col s12 xl10 offset-xl1'>
+							<i class="material-icons prefix">view_column</i>
+							{% render_field form.cover class+="validate materialize-textarea" %}
+				      <label for='{{ form.cover.name }}'>{{ form.cover.label }}</label>
+				      {% for error in form.cover.errors %}
 					      <p class="red-text center-align">{{ error }}</p>
 				      {% endfor %}
 				    </div>
