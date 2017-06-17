@@ -20,7 +20,5 @@ class Book(models.Model):
     google_info = models.OneToOneField(GoogleBook, null=True)
 
 
-class BookCopy:
+class BookCopy(models.Model):
     book = models.ForeignKey(Book)
-
-

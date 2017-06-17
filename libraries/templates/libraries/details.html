@@ -5,12 +5,12 @@
 	<div class="row valign-wrapper">
 		<div class="col s9">
       <div class="input-field">
-        <input id="search" type="search" class="" required>
+        <input id="search" type="search" placeholder="Search in this library" required>
         <label class="label-icon" for="search"><i class="material-icons">search</i></label>
       </div>
 		</div>
 		<div class="col s3">
-			<a class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
+			<a href="{% url 'book_copy_create' %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
 		</div>
 	</div>
 	<div class="row">
