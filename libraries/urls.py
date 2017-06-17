@@ -1,11 +1,11 @@
 from django.conf.urls import url
 
-from .views import (LibraryDetailsView, LibraryNameUpdateView, InvitationConfirmationView, InvitationDeleteView,
-                    GuestDeleteView, LibrariesListView)
+from .views import *
 
 
 urlpatterns = [
-    url(r'^management$', LibraryDetailsView.as_view(), name='library_management'),
+    url(r'^(?P<pk>[0-9]+)', LibraryDetailsView.as_view(), name='library_details'),
+    url(r'^management$', LibraryManagementView.as_view(), name='library_management'),
     url(r'^update', LibraryNameUpdateView.as_view(), name='library_name_update'),
     url(r'^list', LibrariesListView.as_view(), name='library_list'),
     url(r'^confirm_invitation/(?P<library_id>[0-9]+)/(?P<code>.{32})/$', InvitationConfirmationView.as_view(),

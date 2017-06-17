@@ -14,8 +14,8 @@
   <body>
     <div class="navbar-fixed">
       <ul id="libraries-dropdown" class="dropdown-content">
-        <li><a href="{% url 'home' %}">Your library</a></li>
-	      <li><a href="{% url 'library_list' %}">Other</a></li>
+        <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your library</a></li>
+	      <li><a href="{% url 'library_list' %}">All libraries</a></li>
       </ul>
 		  <nav>
 		    <div class="nav-wrapper z-depth-1">

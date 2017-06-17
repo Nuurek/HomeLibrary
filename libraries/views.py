@@ -1,4 +1,4 @@
-from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView
+from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
@@ -11,8 +11,13 @@ from .forms import SendInvitationForm
 from accounts.models import UserProfile
 
 
-class LibraryDetailsView(LoginRequiredMixin, FormView):
+class LibraryDetailsView(LoginRequiredMixin, DetailView):
     template_name = 'libraries/details.html'
+    model = Library
+
+
+class LibraryManagementView(LoginRequiredMixin, FormView):
+    template_name = 'libraries/management.html'
     form_class = SendInvitationForm
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('library_management')

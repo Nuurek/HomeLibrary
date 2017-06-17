@@ -1,75 +1,19 @@
 {% extends 'libraries/base.html' %}
-{% load widget_tweaks %}
 
 
 {% block content %}
-	<div class="section z-depth-1">
-		<h2 class="title">{{ library.name }}</h2>
-		<a href="{% url 'library_name_update' %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
-	</div>
-
-	<div class="divider"></div>
-
-	<div class="section">
-		<div class="row">
-			<div class="col s12 l6 offset-l3 xl4 offset-xl4">
-				<ul class="collection with-header left-align">
-					<li>
-						<div class="collection-header center-align"><h4>Users</h4></div>
-					</li>
-					<li class="collection-item active">
-						<div>
-							<b>{{ user.username }}</b>
-							<i class="material-icons secondary-content">supervisor_account</i>
-						</div>
-					</li>
-					{% for guest in guests %}
-						<li class="collection-item">
-							<div>
-								{{ guest.user.username }}
-								<a href="{% url 'guest_delete' guest.user.userprofile.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
-							</div>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
+	<div class="row valign-wrapper">
+		<div class="col s9">
+      <div class="input-field">
+        <input id="search" type="search" class="" required>
+        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+      </div>
+		</div>
+		<div class="col s3">
+			<a class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
 		</div>
 	</div>
+	<div class="row">
 
-	<div class="section">
-		<div class="row">
-			{% if invitations %}
-				<div class="col s12 l6 offset-l3 xl4 offset-xl4">
-					<ul class="collection left-align">
-						<li>
-							<div class="collection-header center-align"><h4>Invitations</h4></div>
-						</li>
-						{% for invitation in invitations %}
-						<li class="collection-item">
-							<div>
-								{{ invitation.email }}
-								<a href="{% url 'invitation_delete' invitation.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
-							</div>
-						</li>
-						{% endfor %}
-					</ul>
-				</div>
-			{% else %}
-				<div class="col s10 offset-s1 l8 offset-l2">
-					<h4>Invite someone to your library</h4>
-				</div>
-			{% endif %}
-
-			<form method="post">
-				{% csrf_token %}
-				<div class="row">
-					<div class="input-field col s10 offset-s1 l6 offset-l3 xl4 offset-xl4">
-						{{ form.email | attr:'class:validate' }}
-		        <label for="{{ form.email.name }}">{{ form.email.label }}</label>
-					</div>
-				</div>
-				<button type='submit' class='btn waves-effect waves-light z-depth-1'>Invite</button>
-			</form>
-		</div>
 	</div>
 {% endblock %}
