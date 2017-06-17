@@ -9,7 +9,7 @@
 		  {% csrf_token %}
 
 	    <div class='row'>
-	      <div class='input-field col s12'>
+	      <div class='input-field col s10 offset-s1'>
 	        {{ form.username | attr:'class:validate' }}
 	        <label for='{{ form.username.name }}'>{{ form.username.label }}</label>
 		      {% for error in form.username.errors %}
@@ -19,14 +19,14 @@
 	    </div>
 
 	    <div class='row'>
-	      <div class='input-field col s12'>
+	      <div class='input-field col s10 offset-s1'>
 	        {{ form.password | attr:'class:validate' }}
 	        <label for='{{ form.password.name }}'>{{ form.password.label }}</label>
 		      {% for error in form.password.errors %}
 			      <p class="red-text center-align">{{ error }}</p>
 		      {% endfor %}
 	      </div>
-	      <label class="right">
+	      <label class="right col pull-s1">
 		      <!-- TODO: Forgotten password form -->
 	        <a href="#">Forget password?</a>
 	      </label>
@@ -39,7 +39,7 @@
 	    </div>
 
 	    <div class='row'>
-	      <button type='submit' class='col s12 btn btn-large waves-effect z-depth-2'>Login</button>
+	      <button type='submit' class='col s10 offset-s1 btn btn-large waves-effect z-depth-2'>Login</button>
 	    </div>
 
 	    <div class="row">

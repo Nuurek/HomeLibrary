@@ -1,0 +1,75 @@
+{% extends 'books/base.html' %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+	<div class="section">
+		<div class="row">
+			<h5 class="header">Fill in the book details</h5>
+			<div class="col s12 xl6 offset-xl3">
+				<form class="col s12 z-depth-1" action="">
+					<div class="row">
+						<div class='input-field col s12 xl10 offset-xl1'>
+							<i class="material-icons prefix">subject</i>
+				      {{ form.title | attr:'class:validate' }}
+				      <label for='{{ form.title.name }}'>{{ form.title.label }}</label>
+				      {% for error in form.title.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+					<div class="row">
+						<div class='input-field col s12 xl10 offset-xl1'>
+							<i class="material-icons prefix">account_circle</i>
+				      {{ form.author | attr:'class:validate' }}
+				      <label for='{{ form.author.name }}'>{{ form.author.label }}</label>
+				      {% for error in form.author.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+					<div class="row">
+						<div class='input-field col s12 xl10 offset-xl1'>
+							<i class="material-icons prefix">description</i>
+							{% render_field form.description class+="validate materialize-textarea" %}
+				      <label for='{{ form.description.name }}'>{{ form.description.label }}</label>
+				      {% for error in form.description.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+					<div class="row">
+						<div class='input-field col s12 xl10 offset-xl1'>
+							<i class="material-icons prefix">view_column</i>
+							{% render_field form.page_count class+="validate materialize-textarea" %}
+				      <label for='{{ form.page_count.name }}'>{{ form.page_count.label }}</label>
+				      {% for error in form.page_count.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+					<div class="row">
+						<div class="file-field input-field col s12 xl10 offset-xl1">
+				      <div class="btn">
+				        <span>{{ form.cover.name }}</span>
+				        {{ form.cover }}
+				      </div>
+				      <div class="file-path-wrapper">
+				        <input class="file-path validate" type="text">
+				      </div>
+							{% for error in form.cover.errors %}
+					      <p class="red-text center-align">{{ error }}</p>
+				      {% endfor %}
+				    </div>
+					</div>
+
+					<div class="row">
+						<button type="submit" class="btn-large">Save the book</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock %}

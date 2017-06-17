@@ -13,10 +13,12 @@
   </head>
   <body>
     <div class="navbar-fixed">
-      <ul id="libraries-dropdown" class="dropdown-content">
-        <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your library</a></li>
-	      <li><a href="{% url 'library_list' %}">All libraries</a></li>
-      </ul>
+      {% if user.is_authenticated %}
+	      <ul id="libraries-dropdown" class="dropdown-content">
+	        <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your library</a></li>
+		      <li><a href="{% url 'library_list' %}">All libraries</a></li>
+	      </ul>
+      {% endif %}
 		  <nav>
 		    <div class="nav-wrapper z-depth-1">
 		      <a href="{% url 'home' %}" class="brand-logo"><i class="material-icons left">library_books</i>Home Library</a>

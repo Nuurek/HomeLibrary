@@ -4,5 +4,6 @@ from .views import *
 
 
 urlpatterns = [
-    url(r'create', BookCopyCreateView.as_view(), name='book_copy_create'),
+    url(r'copy/create', BookCopyCreateView.as_view(), name='book_copy_create'),
+    url(r'create', BookCreateView.as_view(), name='book_create'),
 ]

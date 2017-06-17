@@ -10,7 +10,7 @@
 
 		  {% for field in form %}
 		  <div class='row'>
-	      <div class='input-field col s12'>
+	      <div class='input-field col s10 offset-s1'>
 	        {{ field | attr:'class:validate' }}
 	        <label for='{{ field.name }}'>{{ field.label }}</label>
 		      {% for error in field.errors %}
@@ -21,7 +21,7 @@
 		  {% endfor %}
 
 	    <div class='row'>
-	      <button type='submit' class='col s12 btn btn-large waves-effect z-depth-2'>Sign up</button>
+	      <button type='submit' class='col s10 offset-s1 btn btn-large waves-effect z-depth-2'>Sign up</button>
 	    </div>
 
 	    <div class="row">
