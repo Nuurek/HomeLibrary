@@ -1,5 +1,7 @@
 from django.db import models
 
+from accounts.models import UserProfile
+
 
 class GoogleBook(models.Model):
     google_id = models.CharField(max_length=12)
@@ -21,3 +23,8 @@ class Book(models.Model):
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
+
+
+class BookCoverPreview(models.Model):
+    cover = models.ImageField()
+    profile = models.ForeignKey(UserProfile)
