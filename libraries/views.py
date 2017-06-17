@@ -1,4 +1,4 @@
-from django.views.generic import FormView, UpdateView, TemplateView, DeleteView
+from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
@@ -15,7 +15,7 @@ class LibraryDetailsView(LoginRequiredMixin, FormView):
     template_name = 'libraries/details.html'
     form_class = SendInvitationForm
     login_url = reverse_lazy('login')
-    success_url = reverse_lazy('library_details')
+    success_url = reverse_lazy('library_management')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,12 +72,12 @@ class InvitationConfirmationView(TemplateView):
 
 class InvitationDeleteView(DeleteView):
     model = Invitation
-    success_url = reverse_lazy('library_details')
+    success_url = reverse_lazy('library_management')
 
 
 class GuestDeleteView(DeleteView):
     model = UserProfile
-    success_url = reverse_lazy('library_details')
+    success_url = reverse_lazy('library_management')
     template_name = 'libraries/guest_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
@@ -86,3 +86,17 @@ class GuestDeleteView(DeleteView):
         library = self.request.user.userprofile.home_library
         library.users.remove(self.object)
         return HttpResponseRedirect(success_url)
+
+
+class LibrariesListView(ListView):
+    model = Library
+    template_name = 'libraries/list.html'
+
+    def get_queryset(self):
+        profile = self.request.user.userprofile
+        return profile.libraries.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['home_library'] = self.request.user.userprofile.home_library
+        return context

@@ -1,0 +1,31 @@
+{% extends 'libraries/base.html' %}
+
+{% block content %}
+	<div class="section">
+		<div class="row">
+			<div class="col s12 l6 offset-l3 xl4 offset-xl4">
+				<h4>Libraries</h4>
+				<ul class="collection">
+					<li class="collection-item active">
+						<a href="#">
+							<div>
+							<b>{{ home_library.owner.user.username }} - {{ home_library.name }}</b>
+							<i class="material-icons secondary-content">library_books</i>
+							</div>
+						</a>
+					</li>
+					{% for library in object_list %}
+						<li class="collection-item">
+						<a href="#">
+							<div>
+							<b>{{ library.owner.user.username }} - {{ library.name }}</b>
+							<i class="material-icons secondary-content">library_books</i>
+							</div>
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}

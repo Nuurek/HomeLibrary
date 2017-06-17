@@ -18,7 +18,7 @@ class Library(models.Model):
 
     @staticmethod
     def get_absolute_url():
-        return reverse('library_details')
+        return reverse('library_management')
 
     def __str__(self):
         return self.name + " of the " + self.owner.user.username
