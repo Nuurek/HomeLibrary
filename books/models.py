@@ -1,6 +1,7 @@
 from django.db import models
-
 from accounts.models import UserProfile
+
+from libraries.models import Library
 
 
 class GoogleBook(models.Model):
@@ -20,9 +21,13 @@ class Book(models.Model):
     class Meta:
         unique_together = ('title', 'author')
 
+    def __str__(self):
+        return self.title + ', ' + self.author
+
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
+    library = models.ForeignKey(Library)
 
 
 class BookCoverPreview(models.Model):
