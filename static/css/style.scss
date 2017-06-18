@@ -24,6 +24,21 @@ body {
   }
 }
 
+
+@media #{$medium-and-up} {
+  .book-card {
+    height: 300px;
+
+    .card-image {
+      height: inherit;
+
+      img {
+        height: inherit;
+      }
+    }
+  }
+}
+
 .input-field input[type=date]:focus + label,
 .input-field input[type=text]:focus + label,
 .input-field input[type=email]:focus + label,

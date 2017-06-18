@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from .models import Library, Invitation
 from .forms import SendInvitationForm
 from accounts.models import UserProfile
+from books.models import BookCopy
 
 
 class LibraryGuestMixin(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -34,6 +35,11 @@ class LibraryGuestMixin(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
 class LibraryDetailsView(LibraryGuestMixin):
     template_name = 'libraries/details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(LibraryDetailsView, self).get_context_data(**kwargs)
+        context['book_copies'] = BookCopy.objects.filter(library=self.library)
+        return context
 
 
 class LibraryManagementView(LoginRequiredMixin, FormView):
