@@ -4,20 +4,18 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
+from libraries.views import LibraryGuestMixin
 from .models import BookCopy, BookCoverPreview
 from .forms import BookForm, BookPreviewForm
 
 
-class BookCopyCreateView(LoginRequiredMixin, CreateView):
-    model = BookCopy
-    fields = ('book', )
+class BookCopyCreateView(LibraryGuestMixin):
     template_name = 'books/book_copy_create.html'
 
 
-class BookCreateView(LoginRequiredMixin, FormView):
+class BookCreateView(LibraryGuestMixin, FormView):
     form_class = BookForm
     template_name = 'books/book_create.html'
-    success_url = reverse_lazy('book_preview')
 
     def get_initial(self):
         if 'book' in self.request.session:
@@ -27,14 +25,20 @@ class BookCreateView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         user_profile = self.request.user.userprofile
-        BookCoverPreview.objects.get_object_or_404(profile=user_profile).delete()
+        try:
+            BookCoverPreview.objects.get(profile=user_profile).delete()
+        except BookCoverPreview.DoesNotExist:
+            pass
         cover_preview = BookCoverPreview(profile=user_profile, cover=form.cleaned_data.pop('cover'))
         cover_preview.save()
         self.request.session['book'] = form.cleaned_data
         return super(BookCreateView, self).form_valid(form)
 
+    def get_success_url(self):
+        return reverse_lazy('book_preview', kwargs={'library_pk': self.library_pk})
 
-class BookPreviewView(LoginRequiredMixin, TemplateView):
+
+class BookPreviewView(LibraryGuestMixin):
     template_name = 'books/book_preview.html'
 
     def get_context_data(self, **kwargs):

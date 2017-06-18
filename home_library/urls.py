@@ -6,7 +6,6 @@ from django.views.generic import TemplateView
 
 from accounts import urls as account_urls
 from libraries import urls as library_urls
-from books import urls as book_urls
 
 
 urlpatterns = [
@@ -14,5 +13,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include(account_urls)),
     url(r'^library/', include(library_urls)),
-    url(r'^book/', include(book_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,8 +5,8 @@ from libraries.models import Library
 
 
 class GoogleBook(models.Model):
-    google_id = models.CharField(max_length=12)
-    ISBN = models.CharField(max_length=13)
+    google_id = models.CharField(max_length=12, blank=True)
+    ISBN = models.CharField(max_length=13, blank=True)
     ebook_link = models.URLField()
 
 
@@ -15,7 +15,7 @@ class Book(models.Model):
     description = models.TextField(max_length=1500)
     page_count = models.PositiveSmallIntegerField()
     author = models.CharField(max_length=50)
-    cover = models.ImageField()
+    cover = models.ImageField(upload_to='cover/')
     google_info = models.OneToOneField(GoogleBook, null=True, blank=True)
 
     class Meta:
