@@ -4,16 +4,16 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from libraries.models import Library
-from libraries.views import LibraryGuestMixin
+from libraries.views import LibraryGuestTemplateView
 from .forms import BookForm, BookPreviewForm
 from .models import BookCoverPreview, BookCopy
 
 
-class BookCopyCreateView(LibraryGuestMixin):
+class BookCopyCreateView(LibraryGuestTemplateView):
     template_name = 'books/book_copy_create.html'
 
 
-class BookCreateView(LibraryGuestMixin, FormView):
+class BookCreateView(LibraryGuestTemplateView, FormView):
     form_class = BookForm
     template_name = 'books/book_create.html'
 
@@ -38,7 +38,7 @@ class BookCreateView(LibraryGuestMixin, FormView):
         return reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk})
 
 
-class BookPreviewView(LibraryGuestMixin):
+class BookPreviewView(LibraryGuestTemplateView):
     template_name = 'books/book_preview.html'
 
     def get_context_data(self, **kwargs):
