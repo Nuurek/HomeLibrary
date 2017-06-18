@@ -1,12 +1,12 @@
-from django.views.generic import CreateView, FormView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import FormView
 
+from libraries.models import Library
 from libraries.views import LibraryGuestMixin
-from .models import BookCopy, BookCoverPreview
 from .forms import BookForm, BookPreviewForm
+from .models import BookCoverPreview, BookCopy
 
 
 class BookCopyCreateView(LibraryGuestMixin):
@@ -35,7 +35,7 @@ class BookCreateView(LibraryGuestMixin, FormView):
         return super(BookCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('book_preview', kwargs={'library_pk': self.library_pk})
+        return reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk})
 
 
 class BookPreviewView(LibraryGuestMixin):
@@ -50,6 +50,8 @@ class BookPreviewView(LibraryGuestMixin):
         return context
 
     def dispatch(self, request, *args, **kwargs):
+        get_response = super().dispatch(request, *args, **kwargs)
+
         if request.method == 'POST':
             if 'book' in self.request.session:
                 book_data = self.request.session.pop('book')
@@ -60,10 +62,11 @@ class BookPreviewView(LibraryGuestMixin):
                     book.cover = cover_preview.cover
                     book.save()
                     cover_preview.delete()
+                    BookCopy.objects.create(library=self.library, book=book).save()
                 else:
                     return HttpResponseForbidden()
-                return HttpResponseRedirect(reverse_lazy('library_list'))
+                return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
             else:
                 return HttpResponseForbidden()
         else:
-            return super().dispatch(request, *args, **kwargs)
+            return get_response

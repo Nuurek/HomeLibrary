@@ -29,6 +29,9 @@ class BookCopy(models.Model):
     book = models.ForeignKey(Book)
     library = models.ForeignKey(Library)
 
+    def __str__(self):
+        return str(self.book) + ' in ' + str(self.library)
+
 
 class BookCoverPreview(models.Model):
     cover = models.ImageField()

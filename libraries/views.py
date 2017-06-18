@@ -1,5 +1,4 @@
-from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, DetailView
-from django.views.generic.detail import BaseDetailView
+from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,24 +12,23 @@ from .forms import SendInvitationForm
 from accounts.models import UserProfile
 
 
-class LibraryGuestMixin(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-    model = Library
-    raise_exception = True
+class LibraryGuestMixin(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     pk_url_kwarg = 'library_pk'
-    library_pk = None
+    raise_exception = True
+    library = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.library_pk = self.kwargs['library_pk']
+        library_pk = self.kwargs['library_pk']
+        self.library = get_object_or_404(Library, pk=library_pk)
         return super(LibraryGuestMixin, self).dispatch(request, *args, **kwargs)
 
     def test_func(self):
-        library = get_object_or_404(Library, pk=self.kwargs['library_pk'])
         profile = self.request.user.userprofile
-        return profile == library.owner or profile in library.users.all()
+        return profile == self.library.owner or profile in self.library.users.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['library_pk'] = self.library_pk
+        context['library_pk'] = self.library.pk
         return context
 
 
