@@ -1,16 +1,16 @@
-from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.crypto import get_random_string
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.utils.crypto import get_random_string
+from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
 
-from .models import Library, Invitation
-from .forms import SendInvitationForm
 from accounts.models import UserProfile
 from books.models import BookCopy
+from .forms import SendInvitationForm
+from .models import Library, Invitation
 
 
 class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):

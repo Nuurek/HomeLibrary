@@ -1,12 +1,14 @@
+from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView
+from django.core import serializers
 
-from libraries.models import Library
-from libraries.views import LibraryGuestTemplateView
+from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
-from .models import BookCoverPreview, BookCopy
+from .models import BookCoverPreview, BookCopy, Book
 
 
 class BookCopyCreateView(LibraryGuestTemplateView):
@@ -70,3 +72,19 @@ class BookPreviewView(LibraryGuestTemplateView):
                 return HttpResponseForbidden()
         else:
             return get_response
+
+
+class LibraryBookCopiesListView(LibraryGuestView):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'GET':
+            return HttpResponse(
+                self.get_books(), content_type='application/json'
+            )
+
+    def get_books(self):
+        query = self.request.GET['query']
+        book_copies = BookCopy.objects.select_related('book').filter(Q(book__title__contains=query) | Q(book__author__contains=query))
+        books = Book.objects.filter(bookcopy__in=book_copies)
+        books = serializers.serialize('json', books)
+        return books
