@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 from django.core import serializers
+from django.conf import settings
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
@@ -84,7 +85,9 @@ class LibraryBookCopiesListView(LibraryGuestView):
 
     def get_books(self):
         query = self.request.GET['query']
-        book_copies = BookCopy.objects.select_related('book').filter(Q(book__title__contains=query) | Q(book__author__contains=query))
+        book_copies = BookCopy.objects.filter(Q(book__title__contains=query) | Q(book__author__contains=query))
         books = Book.objects.filter(bookcopy__in=book_copies)
+        for book in books:
+            book.cover = book.cover.url
         books = serializers.serialize('json', books)
         return books
