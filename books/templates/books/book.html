@@ -1,0 +1,32 @@
+<div class="row">
+	<div class="col s12 xl8 offset-xl2">
+		<div class="card horizontal book-card z-depth-1">
+		  <div class="card-image waves-effect waves-block waves-light">
+		    <img class="activator z-depth-2" src="{{ cover }}">
+		  </div>
+		  <div class="card-stacked">
+		    <div class="card-content">
+		      <span class="card-title grey-text text-darken-4">
+			      {{ title }}
+		      </span>
+		      <p>Author: {{ author }}</p>
+		    </div>
+		    <div class="card-action">
+		      <span>{{ description | truncatewords:20}}</span>
+		      <div>
+		        <a class="btn-floating activator btn waves-effect waves-light"><i class="material-icons z-depth-2">description</i></a>
+		      </div>
+		    </div>
+		  </div>
+		  <div class="card-reveal">
+		    <span class="card-title grey-text text-darken-4">{{ title }}<i class="material-icons right">close</i></span>
+		    <p>Author: {{ author }}</p>
+		    <p>{{ description }}</p>
+		  </div>
+			{% if ebook_link %}
+				<p>Ebook available on:</p>
+				<a href="{{ ebook_link }}">Google Books</a>
+			{% endif %}
+		</div>
+	</div>
+</div>

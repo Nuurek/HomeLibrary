@@ -2,9 +2,7 @@ const componentsPath = '/static/components/';
 const loaderFileName = 'loader.html';
 
 function updateBooks(data) {
-    data.forEach(function (element) {
-        console.log(element['fields']['title']);
-    });
+    console.log(data);
 }
 
 function getBooks(path, query) {
@@ -13,7 +11,7 @@ function getBooks(path, query) {
         query: query
     };
     $.ajax({
-        dataType: 'json',
+        dataType: 'html',
         url: url,
         data: data,
         success: updateBooks
@@ -24,7 +22,6 @@ let timeoutId = null;
 let loaderPath = componentsPath + loaderFileName;
 let loader = null;
 $.get(loaderPath, function (data) {
-    console.log(data);
     loader = data;
 });
 let booksSection = $('#books');
