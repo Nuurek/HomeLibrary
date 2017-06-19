@@ -3,7 +3,6 @@ const loaderFileName = 'loader.html';
 
 let booksSection = $('#books');
 function updateBooks(data) {
-    console.log(data);
     booksSection.html(data);
 }
 
@@ -33,5 +32,5 @@ $('#search').on('input', function(event){
     }
     let query = $(event.target).val();
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(function() {getBooks('/book/list', query)}, 200);
+    timeoutId = setTimeout(function() {getBooks('/book/copy/list', query)}, 200);
 });

@@ -1,13 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import HttpResponse
-from django.template import Template, Context
-from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-from django.core import serializers
-from django.conf import settings
+from django.views.generic import ListView
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
@@ -83,9 +80,18 @@ class LibraryBookCopiesListView(LibraryGuestView, ListView):
 
     def get_queryset(self):
         query = self.request.GET['query']
-        book_copies = BookCopy.objects.filter(
+        return BookCopy.objects.filter(
             library=self.library
         ).filter(
             Q(book__title__contains=query) | Q(book__author__contains=query)
         )
-        return book_copies
+
+
+class BookListView(LoginRequiredMixin, ListView):
+    model = Book
+    template_name = 'books/book_list.html'
+
+    def get_queryset(self):
+        query = self.request.GET['query']
+        books = Book.objects.filter(Q(title__contains=query) | Q(author__contains=query))
+        return books
