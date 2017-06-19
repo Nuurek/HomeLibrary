@@ -1,8 +1,10 @@
 const componentsPath = '/static/components/';
 const loaderFileName = 'loader.html';
 
+let booksSection = $('#books');
 function updateBooks(data) {
     console.log(data);
+    booksSection.html(data);
 }
 
 function getBooks(path, query) {
@@ -24,7 +26,6 @@ let loader = null;
 $.get(loaderPath, function (data) {
     loader = data;
 });
-let booksSection = $('#books');
 $('#search').on('input', function(event){
     if (booksSection.find('#preloader').length === 0) {
         booksSection.empty();

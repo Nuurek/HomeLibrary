@@ -16,8 +16,12 @@
 		</div>
 	</div>
 	<div id="books" class="section">
-		{% for copy in book_copies %}
-			{% render_book copy.book %}
-		{% endfor %}
+		{% if book_copies.count > 0 %}
+			{% for copy in book_copies %}
+				{% render_book copy.book %}
+			{% endfor %}
+		{% else %}
+			{% include 'libraries/empty_library_message.html' %}
+		{% endif %}
 	</div>
 {% endblock %}

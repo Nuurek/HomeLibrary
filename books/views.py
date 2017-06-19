@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import Template, Context
+from django.views.generic import ListView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import FormView
@@ -76,23 +77,15 @@ class BookPreviewView(LibraryGuestTemplateView):
             return get_response
 
 
-class LibraryBookCopiesListView(LibraryGuestView):
+class LibraryBookCopiesListView(LibraryGuestView, ListView):
+    model = BookCopy
+    template_name = 'books/book_copies_list.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            return self.get_books_as_html()
-
-    def get_books(self):
+    def get_queryset(self):
         query = self.request.GET['query']
-        book_copies = BookCopy.objects.filter(Q(book__title__contains=query) | Q(book__author__contains=query))
-        books = Book.objects.filter(bookcopy__in=book_copies)
-        for book in books:
-            book.cover = book.cover.url
-        books = serializers.serialize('json', books)
-        return books
-
-    def get_books_as_html(self):
-        query = self.request.GET['query']
-        book_copies = BookCopy.objects.filter(Q(book__title__contains=query) | Q(book__author__contains=query))
-        books = Book.objects.filter(bookcopy__in=book_copies)
-        return books[0].render(self.request)
+        book_copies = BookCopy.objects.filter(
+            library=self.library
+        ).filter(
+            Q(book__title__contains=query) | Q(book__author__contains=query)
+        )
+        return book_copies

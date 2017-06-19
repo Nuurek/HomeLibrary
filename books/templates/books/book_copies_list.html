@@ -1,0 +1,9 @@
+{% load books %}
+
+{% if bookcopy_list.count > 0 %}
+	{% for copy in bookcopy_list %}
+		{% render_book copy.book %}
+	{% endfor %}
+{% else %}
+	{% include 'libraries/empty_library_message.html' %}
+{% endif %}

@@ -18,17 +18,17 @@ class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
     raise_exception = True
     library = None
 
+    def dispatch(self, request, *args, **kwargs):
+        library_pk = self.kwargs['library_pk']
+        self.library = get_object_or_404(Library, pk=library_pk)
+        return super(LibraryGuestView, self).dispatch(request, *args, **kwargs)
+
     def test_func(self):
         profile = self.request.user.userprofile
         return profile == self.library.owner or profile in self.library.users.all()
 
 
 class LibraryGuestTemplateView(LibraryGuestView, TemplateView):
-
-    def dispatch(self, request, *args, **kwargs):
-        library_pk = self.kwargs['library_pk']
-        self.library = get_object_or_404(Library, pk=library_pk)
-        return super(LibraryGuestTemplateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
