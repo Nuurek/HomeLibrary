@@ -112,13 +112,12 @@ class BookListView(LoginRequiredMixin, ListView):
         return books
 
 
-class GoogleBookListView(LoginRequiredMixin, ListView):
-    model = GoogleBook
+class GoogleBookListView(LibraryGuestTemplateView):
     template_name = 'books/google_book_list.html'
-    context_object_name = 'google_book_list'
 
-    def get_queryset(self):
+    def get_context_data(self, **kwargs):
+        context = super(GoogleBookListView, self).get_context_data(**kwargs)
         query = self.request.GET['query']
         api = GoogleBooksAPI()
-        books = api.search(query)
-        return books
+        context['google_book_list'] = api.search(query)
+        return context

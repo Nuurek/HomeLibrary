@@ -7,7 +7,10 @@ class GoogleBooksAPI:
     api = discovery.build('books', 'v1')
 
     def search(self, query: str):
-        query.replace(' ', '+')
+        query = query.strip()
+        if len(query) == 0:
+            return []
+        query = query.replace(' ', '+')
 
         http = Http()
         request: HttpRequest = GoogleBooksAPI.api.volumes().list(
@@ -24,6 +27,7 @@ class GoogleBooksAPI:
     @staticmethod
     def api_response_to_tag_dict(api_book):
         book = dict()
+        book['id'] = api_book['id']
         volume_info: dict = api_book['volumeInfo']
 
         try:

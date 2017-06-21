@@ -16,6 +16,6 @@ def render_book(book: Book):
     }
 
 
-@register.inclusion_tag('books/book_tag.html')
+@register.inclusion_tag('books/google_book_tag.html')
 def render_google_book(book: dict):
     return book
