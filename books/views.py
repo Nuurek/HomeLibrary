@@ -11,8 +11,18 @@ from .forms import BookForm, BookPreviewForm
 from .models import BookCoverPreview, BookCopy, Book
 
 
-class BookCopyCreateView(LibraryGuestTemplateView):
+class BookCopyCreateView(LibraryGuestView, ListView):
     template_name = 'books/book_copy_create.html'
+    model = Book
+    context_object_name = 'books'
+
+    def get_queryset(self):
+        return Book.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(BookCopyCreateView, self).get_context_data(**kwargs)
+        context['library_pk'] = self.library.pk
+        return context
 
 
 class BookCreateView(LibraryGuestTemplateView, FormView):

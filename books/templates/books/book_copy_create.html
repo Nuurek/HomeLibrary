@@ -1,4 +1,5 @@
 {% extends 'books/base.html' %}
+{% load static books %}
 
 
 {% block content %}
@@ -21,4 +22,17 @@
 			</div>
 		</div>
 	</div>
+	<div id="books" class="section">
+		{% if books.count > 0 %}
+			{% for book in books %}
+				{% render_book book %}
+			{% endfor %}
+		{% else %}
+			{% include 'libraries/empty_library_message.html' %}
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{% static 'js/book_copy_create.js' %}"></script>
 {% endblock %}

@@ -1,8 +1,8 @@
 {% extends 'libraries/base.html' %}
-{% load books %}
+{% load static books %}
 
 {% block content %}
-	<div id="book-search" class="section">
+	<div id="book-search" class="section" path="/book/copy/list">
 		<div class="row valign-wrapper">
 			<div class="col s9">
 	      <div class="input-field">
@@ -24,4 +24,9 @@
 			{% include 'libraries/empty_library_message.html' %}
 		{% endif %}
 	</div>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/libraries/details.js' %}"></script>
 {% endblock %}
