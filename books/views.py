@@ -8,7 +8,8 @@ from django.views.generic import ListView
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
-from .models import BookCoverPreview, BookCopy, Book
+from .models import BookCoverPreview, BookCopy, Book, GoogleBook
+from .google_books_api import GoogleBooksAPI
 
 
 class BookCopyCreateView(LibraryGuestView, ListView):
@@ -84,6 +85,10 @@ class BookPreviewView(LibraryGuestTemplateView):
             return get_response
 
 
+class GoogleBookView(LibraryGuestTemplateView):
+    template_name = 'books/google_book.html'
+
+
 class LibraryBookCopiesListView(LibraryGuestView, ListView):
     model = BookCopy
     template_name = 'books/book_copies_list.html'
@@ -105,3 +110,13 @@ class BookListView(LoginRequiredMixin, ListView):
         query = self.request.GET['query']
         books = Book.objects.filter(Q(title__contains=query) | Q(author__contains=query))
         return books
+
+
+class GoogleBookListView(LoginRequiredMixin, ListView):
+    model = GoogleBook
+    template_name = 'books/google_book_list.html'
+
+    def get_queryset(self):
+        query = self.request.GET['query']
+        api = GoogleBooksAPI()
+        return api.search(query)

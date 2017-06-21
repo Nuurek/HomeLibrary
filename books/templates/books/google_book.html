@@ -1,0 +1,20 @@
+{% extends 'books/base.html' %}
+{% load static books %}
+
+
+{% block content %}
+	<div class="row valign-wrapper">
+		<div class="col s12">
+      <div class="input-field">
+        <input id="search" type="search" placeholder="Search through huge Google Books catalog" required>
+        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+      </div>
+		</div>
+	</div>
+	<div id="books" class="section">
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{% static 'js/book_copy_create.js' %}"></script>
+{% endblock %}
