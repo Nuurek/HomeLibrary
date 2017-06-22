@@ -11,7 +11,7 @@ def render_book(book: Book):
         'title': book.title,
         'author': book.author,
         'description': book.description,
-        'cover': book.cover.url,
+        'cover': book.cover.url if book.cover else None,
         'ebook_link': book.google_info.ebook_link if book.google_info else None,
     }
 

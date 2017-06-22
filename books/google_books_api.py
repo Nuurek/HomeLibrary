@@ -1,6 +1,9 @@
+from django.utils.html import strip_tags
 from googleapiclient import discovery
 from googleapiclient.http import HttpRequest
 from httplib2 import Http
+
+from .models import Book
 
 
 class GoogleBooksAPI:
@@ -12,10 +15,10 @@ class GoogleBooksAPI:
             return []
         query = query.replace(' ', '+')
 
-        http = Http()
         request: HttpRequest = GoogleBooksAPI.api.volumes().list(
             q=query, printType='books', projection='full', maxResults=20
         )
+        http = Http()
         response = request.execute(http=http)
 
         books = response['items']
@@ -23,6 +26,12 @@ class GoogleBooksAPI:
         books = [book for book in books if book is not None]
 
         return books
+
+    def get(self, volume_id):
+        request: HttpRequest = GoogleBooksAPI.api.volumes().get(volumeId=volume_id)
+        http = Http()
+        book = request.execute(http=http)
+        return self.api_response_to_tag_dict(book)
 
     @staticmethod
     def api_response_to_tag_dict(api_book):
@@ -35,9 +44,11 @@ class GoogleBooksAPI:
             if 'subtitle' in volume_info:
                 book['title'] += '. ' + volume_info['subtitle']
             book['author'] = volume_info['authors'][0]
-            book['description'] = volume_info['description']
+            description = strip_tags(volume_info['description'])[0:Book._meta.get_field('description').max_length]
+            book['description'] = description
             book['page_count'] = volume_info['pageCount']
-            book['cover'] = '&'.join(volume_info['imageLinks']['thumbnail'].split('&')[0:-3] + ['zoom=2'])
+            book['cover'] = '&'.join([volume_info['imageLinks']['thumbnail'].split('&')[0],
+                                      'printsec=frontcover', 'img=1', 'zoom=1'])
 
             pdf_info = api_book['accessInfo']['pdf']
             if pdf_info['isAvailable'] and 'downloadLink' in pdf_info:

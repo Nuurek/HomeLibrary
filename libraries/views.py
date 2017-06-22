@@ -19,7 +19,7 @@ class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
     library = None
 
     def dispatch(self, request, *args, **kwargs):
-        library_pk = self.kwargs['library_pk']
+        library_pk = kwargs.pop('library_pk')
         self.library = get_object_or_404(Library, pk=library_pk)
         return super(LibraryGuestView, self).dispatch(request, *args, **kwargs)
 

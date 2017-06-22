@@ -8,7 +8,7 @@ function setUpSearch(booksPath) {
     }
 
     function getBooks(path, query) {
-        let url = window.location.origin + path;
+        let url = window.location.pathname + path;
         let data = {
             query: query
         };

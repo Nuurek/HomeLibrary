@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.temp import NamedTemporaryFile
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from django.views.generic import ListView
+import requests
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
@@ -38,12 +40,13 @@ class BookCreateView(LibraryGuestTemplateView, FormView):
 
     def form_valid(self, form):
         user_profile = self.request.user.userprofile
-        try:
-            BookCoverPreview.objects.get(profile=user_profile).delete()
-        except BookCoverPreview.DoesNotExist:
-            pass
-        cover_preview = BookCoverPreview(profile=user_profile, cover=form.cleaned_data.pop('cover'))
-        cover_preview.save()
+        if form.cleaned_data['cover'] is not None:
+            try:
+                BookCoverPreview.objects.get(profile=user_profile).delete()
+            except BookCoverPreview.DoesNotExist:
+                pass
+            cover_preview = BookCoverPreview(profile=user_profile, cover=form.cleaned_data.pop('cover'))
+            cover_preview.save()
         self.request.session['book'] = form.cleaned_data
         return super(BookCreateView, self).form_valid(form)
 
@@ -56,8 +59,11 @@ class BookPreviewView(LibraryGuestTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BookPreviewView, self).get_context_data(**kwargs)
-        book_data = self.request.session['book']
-        book = Book(book_data)
+        try:
+            book_data = self.request.session['book']
+        except KeyError:
+            raise Http404()
+        book = Book(**book_data)
         book.cover = BookCoverPreview.objects.get(profile=self.request.user.userprofile).cover
         context['book'] = book
         return context
@@ -87,6 +93,26 @@ class BookPreviewView(LibraryGuestTemplateView):
 
 class GoogleBookView(LibraryGuestTemplateView):
     template_name = 'books/google_book.html'
+
+    def post(self, request):
+        google_id = request.POST['google-id']
+        api = GoogleBooksAPI()
+        book_data = api.get(google_id)
+        user_profile = self.request.user.userprofile
+        try:
+            BookCoverPreview.objects.get(profile=user_profile).delete()
+        except BookCoverPreview.DoesNotExist:
+            pass
+        cover_url = book_data.pop('cover')
+        response = requests.get(cover_url)
+        img_temp = NamedTemporaryFile(delete=True)
+        img_temp.write(response.content)
+        img_temp.flush()
+        cover_preview = BookCoverPreview(profile=user_profile)
+        cover_preview.cover.save('google' + google_id, img_temp, save=True)
+        cover_preview.save()
+        self.request.session['book'] = book_data
+        return HttpResponseRedirect(reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk}))
 
 
 class LibraryBookCopiesListView(LibraryGuestView, ListView):

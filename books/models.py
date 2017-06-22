@@ -16,7 +16,7 @@ class Book(models.Model):
     description = models.TextField(max_length=1500)
     page_count = models.PositiveSmallIntegerField()
     author = models.CharField(max_length=50)
-    cover = models.ImageField(upload_to='cover/')
+    cover = models.ImageField(upload_to='cover/', blank=True)
     google_info = models.OneToOneField(GoogleBook, null=True, blank=True)
 
     class Meta:
