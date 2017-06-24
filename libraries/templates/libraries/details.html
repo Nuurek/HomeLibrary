@@ -2,6 +2,7 @@
 {% load static books %}
 
 {% block content %}
+	<h4>{{ library.owner.user.username }} - {{ library.name }}</h4>
 	<div id="book-search" class="section">
 		<div class="row valign-wrapper">
 			<div class="col s9">
@@ -18,7 +19,7 @@
 	<div id="books" class="section">
 		{% if book_copies.count > 0 %}
 			{% for copy in book_copies %}
-				{% render_book_copy copy %}
+				{% render_book_copy copy is_owner=is_owner %}
 			{% endfor %}
 		{% else %}
 			{% include 'libraries/empty_library_message.html' %}

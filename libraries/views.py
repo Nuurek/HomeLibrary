@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
-from django.views.generic.edit import BaseDeleteView
+from django.views.generic.edit import BaseDeleteView, BaseUpdateView
 from django.views.generic.list import BaseListView
 
 from accounts.models import UserProfile
@@ -22,10 +22,12 @@ class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
     pk_url_kwarg = 'library_pk'
     raise_exception = True
     library = None
+    is_owner = False
 
     def dispatch(self, request, *args, **kwargs):
         library_pk = kwargs.pop('library_pk')
         self.library = get_object_or_404(Library, pk=library_pk)
+        self.is_owner = self.library.owner.user == self.request.user
         return super(LibraryGuestView, self).dispatch(request, *args, **kwargs)
 
     def test_func(self):
@@ -37,7 +39,9 @@ class LibraryGuestTemplateView(LibraryGuestView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['library'] = self.library
         context['library_pk'] = self.library.pk
+        context['is_owner'] = self.is_owner
         return context
 
 
@@ -174,6 +178,15 @@ class BookCopiesListView(LibraryGuestView, ListView):
 class BookCopyDeleteView(BaseDeleteView, LibraryGuestTemplateView):
     model = BookCopy
     template_name = 'libraries/book_copy_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
+
+
+class BookCopyCommentUpdateView(BaseUpdateView, LibraryGuestTemplateView):
+    model = BookCopy
+    fields = ('comment',)
+    template_name = 'libraries/book_copy_comment.html'
 
     def get_success_url(self):
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})

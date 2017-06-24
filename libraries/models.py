@@ -53,6 +53,7 @@ class Invitation(models.Model):
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
     library = models.ForeignKey(Library)
+    comment = models.TextField(max_length=200, blank=True)
 
     def __str__(self):
         return str(self.book) + ' in ' + str(self.library)
@@ -60,7 +61,7 @@ class BookCopy(models.Model):
 
 class Lending(models.Model):
     copy = models.ForeignKey(BookCopy)
-    borrower = models.ForeignKey(Library)
+    borrower = models.ForeignKey(Library, blank=True, null=True)
     lend_date = models.DateTimeField(auto_now=True)
     return_date = models.DateTimeField(blank=True, null=True)
     is_completed = models.BooleanField(default=False)

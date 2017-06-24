@@ -18,9 +18,10 @@ def render_google_book(book: dict):
 
 
 @register.inclusion_tag('books/tags/book_copy_tag.html')
-def render_book_copy(copy: BookCopy, only_description: bool=False):
+def render_book_copy(copy: BookCopy, **kwargs):
     context = book_copy_to_dict(copy)
-    context['only_description'] = only_description
+    context['only_description'] = kwargs.get('only_description', False)
+    context['is_owner'] = kwargs.get('is_owner', False)
     return context
 
 

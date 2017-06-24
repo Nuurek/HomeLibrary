@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^copy/list$', BookCopiesListView.as_view(), name='library_book_copies'),
     url(r'^copy/create$', BookCopyCreateView.as_view(), name='book_copy_create'),
     url(r'^copy/delete/(?P<pk>[0-9]+)$', BookCopyDeleteView.as_view(), name='book_copy_delete'),
+    url(r'^copy/comment/(?P<pk>[0-9]+)$', BookCopyCommentUpdateView.as_view(), name='book_copy_comment'),
     url(r'^copy/create/', include(book_urls)),
 ]

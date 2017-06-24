@@ -14,7 +14,11 @@
 		      <p>Author: {{ author }}</p>
 		    </div>
 		    <div class="card-action">
-		      <div class="row">{{ description | truncatewords:20}}</div>
+		      <div class="row {% if not comment %}waves-effect activator{% endif %}">
+			      {% block comment %}
+              {{ description | truncatewords:20}}
+			      {% endblock %}
+		      </div>
 		      <form method="post">
 		        {% csrf_token %}
             {% block card_actions %}
