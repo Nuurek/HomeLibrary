@@ -91,7 +91,7 @@ class InvitationConfirmationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        library_id = kwargs['library_id']
+        library_id = kwargs['library_pk']
         confirmation_code = kwargs['code']
         library = Library.objects.get(pk=library_id)
         user = self.request.user

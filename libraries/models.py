@@ -17,9 +17,8 @@ class Library(models.Model):
     class Meta:
         verbose_name_plural = 'libraries'
 
-    @staticmethod
-    def get_absolute_url():
-        return reverse('library_management')
+    def get_absolute_url(self):
+        return reverse('library_management', kwargs={'library_pk': self.pk})
 
     def __str__(self):
         return self.name + " of the " + self.owner.user.username

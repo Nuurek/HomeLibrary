@@ -5,7 +5,7 @@
 {% block content %}
 	<div class="section z-depth-1">
 		<h2 class="title">{{ library.name }}</h2>
-		<a href="{% url 'library_name_update' %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
+		<a href="{% url 'library_name_update' user.userprofile.home_library.pk %}" class="btn btn-floating {% if library.is_name_default %} pulse {% endif %}"><i class="material-icons">edit</i></a>
 	</div>
 
 	<div class="divider"></div>
@@ -48,7 +48,7 @@
 						<li class="collection-item">
 							<div>
 								{{ invitation.email }}
-								<a href="{% url 'invitation_delete' invitation.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
+								<a href="{% url 'invitation_delete' library_pk=user.userprofile.home_library.pk pk=invitation.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
 							</div>
 						</li>
 						{% endfor %}
