@@ -9,7 +9,7 @@ from django.views.generic import FormView
 from django.views.generic import ListView
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
-from .forms import BookForm, BookPreviewForm
+from .forms import BookForm, BookPreviewForm, BookCopyForm
 from .google_books_api import GoogleBooksAPI
 from .models import BookCoverPreview, BookCopy, Book
 
@@ -26,6 +26,14 @@ class BookCopyCreateView(LibraryGuestView, ListView):
         context = super(BookCopyCreateView, self).get_context_data(**kwargs)
         context['library_pk'] = self.library.pk
         return context
+
+    def post(self, request):
+        form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+        else:
+            return HttpResponseForbidden()
 
 
 class BookCreateView(LibraryGuestTemplateView, FormView):
@@ -68,27 +76,22 @@ class BookPreviewView(LibraryGuestTemplateView):
         context['book'] = book
         return context
 
-    def dispatch(self, request, *args, **kwargs):
-        get_response = super().dispatch(request, *args, **kwargs)
-
-        if request.method == 'POST':
-            if 'book' in self.request.session:
-                book_data = self.request.session.pop('book')
-                cover_preview = get_object_or_404(BookCoverPreview, profile=request.user.userprofile)
-                form = BookPreviewForm(book_data)
-                if form.is_valid():
-                    book = form.save()
-                    book.cover = cover_preview.cover
-                    book.save()
-                    cover_preview.delete()
-                    BookCopy.objects.create(library=self.library, book=book).save()
-                else:
-                    return HttpResponseForbidden()
-                return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+    def post(self, request):
+        if 'book' in self.request.session:
+            book_data = self.request.session.pop('book')
+            cover_preview = get_object_or_404(BookCoverPreview, profile=request.user.userprofile)
+            form = BookPreviewForm(book_data)
+            if form.is_valid():
+                book = form.save()
+                book.cover = cover_preview.cover
+                book.save()
+                cover_preview.delete()
+                BookCopy.objects.create(library=self.library, book=book).save()
             else:
                 return HttpResponseForbidden()
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
         else:
-            return get_response
+            return HttpResponseForbidden()
 
 
 class GoogleBookView(LibraryGuestTemplateView):

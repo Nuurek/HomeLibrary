@@ -5,7 +5,7 @@ from books.models import BookCopy, Book
 register = Library()
 
 
-@register.inclusion_tag('books/book_tag.html')
+@register.inclusion_tag('books/tags/book_tag.html')
 def render_book(book: Book):
     return {
         'title': book.title,
@@ -13,9 +13,10 @@ def render_book(book: Book):
         'description': book.description,
         'cover': book.cover.url if book.cover else None,
         'ebook_link': book.google_info.ebook_link if book.google_info else None,
+        'pk': book.pk,
     }
 
 
-@register.inclusion_tag('books/google_book_tag.html')
+@register.inclusion_tag('books/tags/google_book_tag.html')
 def render_google_book(book: dict):
     return book
