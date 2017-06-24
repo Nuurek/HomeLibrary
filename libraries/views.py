@@ -1,13 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
 
 from accounts.models import UserProfile
+from books.forms import BookCopyForm
+from books.models import Book
 from libraries.models import BookCopy
 from .forms import SendInvitationForm
 from .models import Library, Invitation
@@ -134,3 +137,43 @@ class LibrariesListView(ListView):
         context = super().get_context_data(**kwargs)
         context['home_library'] = self.request.user.userprofile.home_library
         return context
+
+
+class LibraryBookCopyCreateView(LibraryGuestView, ListView):
+    template_name = 'libraries/book_copy_create.html'
+    model = Book
+    context_object_name = 'books'
+
+    def get_queryset(self):
+        return Book.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(LibraryBookCopyCreateView, self).get_context_data(**kwargs)
+        context['library_pk'] = self.library.pk
+        return context
+
+    def post(self, request):
+        form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+        else:
+            return HttpResponseForbidden()
+
+
+class LibraryBookCopiesListView(LibraryGuestView, ListView):
+    model = BookCopy
+    template_name = 'libraries/book_copies_list.html'
+
+    def get_queryset(self):
+        query = self.request.GET['query']
+        return BookCopy.objects.filter(
+            library=self.library
+        ).filter(
+            Q(book__title__contains=query) | Q(book__author__contains=query)
+        )
+
+
+class LibraryBookCopyDeleteView(LibraryGuestView, DeleteView):
+    model = BookCopy
+    template_name = 'libraries/book_copy_delete.html'

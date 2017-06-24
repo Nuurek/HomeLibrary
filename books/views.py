@@ -8,33 +8,11 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from django.views.generic import ListView
 
-from libraries.views import LibraryGuestTemplateView, LibraryGuestView
-from .forms import BookForm, BookPreviewForm, BookCopyForm
+from libraries.models import BookCopy
+from libraries.views import LibraryGuestTemplateView
+from .forms import BookForm, BookPreviewForm
 from .google_books_api import GoogleBooksAPI
 from .models import BookCoverPreview, Book
-from libraries.models import BookCopy
-
-
-class BookCopyCreateView(LibraryGuestView, ListView):
-    template_name = 'books/book_copy_create.html'
-    model = Book
-    context_object_name = 'books'
-
-    def get_queryset(self):
-        return Book.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super(BookCopyCreateView, self).get_context_data(**kwargs)
-        context['library_pk'] = self.library.pk
-        return context
-
-    def post(self, request):
-        form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
-        else:
-            return HttpResponseForbidden()
 
 
 class BookCreateView(LibraryGuestTemplateView, FormView):
@@ -99,12 +77,12 @@ class GoogleBookView(LibraryGuestTemplateView):
     template_name = 'books/google_book.html'
 
     def post(self, request):
-        google_id = request.POST['google-id']
+        google_id = request.POST['google_id']
         api = GoogleBooksAPI()
         book_data: dict = api.get(google_id)
 
-        cover_url = book_data.pop('cover')
-        self.save_cover_preview(cover_url, google_id)
+        cover = book_data.pop('cover')
+        self.save_cover_preview(cover['url'], google_id)
 
         self.request.session['book'] = book_data
         return HttpResponseRedirect(reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk}))
@@ -128,19 +106,6 @@ class GoogleBookView(LibraryGuestTemplateView):
         img_temp.write(response.content)
         img_temp.flush()
         return img_temp
-
-
-class LibraryBookCopiesListView(LibraryGuestView, ListView):
-    model = BookCopy
-    template_name = 'books/book_copies_list.html'
-
-    def get_queryset(self):
-        query = self.request.GET['query']
-        return BookCopy.objects.filter(
-            library=self.library
-        ).filter(
-            Q(book__title__contains=query) | Q(book__author__contains=query)
-        )
 
 
 class BookListView(LoginRequiredMixin, ListView):

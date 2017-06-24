@@ -14,7 +14,7 @@
 		      <p>Author: {{ author }}</p>
 		    </div>
 		    <div class="card-action">
-		      <span>{{ description | truncatewords:20}}</span>
+		      <div class="row">{{ description | truncatewords:20}}</div>
 		      <form method="post">
 		        {% csrf_token %}
             {% block card_actions %}
