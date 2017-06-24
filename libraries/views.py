@@ -205,7 +205,25 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
     fields = ('borrower',)
     template_name = 'libraries/lending_create.html'
 
+    def get_form(self, form_class=None):
+        form = super(LendingCreateView, self).get_form(form_class)
+        form.fields['borrower'].empty_label = "Outside the system"
+        guests = self.library.users.all()
+        form.fields['borrower'].queryset = Library.objects.filter(owner__in=guests)
+        return form
+
     def get_context_data(self, **kwargs):
         context = super(LendingCreateView, self).get_context_data(**kwargs)
-        context['bookcopy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
+        context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
         return context
+
+    def form_valid(self, form):
+        lending = form.save(commit=False)
+        lending.copy = get_object_or_404(BookCopy, pk=self.kwargs['pk'])
+        lending.save()
+        print(lending)
+        print(Lending.objects.all())
+        return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+
+    def get_success_url(self):
+        return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})

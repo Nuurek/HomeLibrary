@@ -37,3 +37,7 @@ function setUpSearch(booksPath) {
         timeoutId = setTimeout(function() {getBooks(booksPath, query)}, 100);
     });
 }
+
+$(document).ready(function() {
+    $('select').material_select();
+});

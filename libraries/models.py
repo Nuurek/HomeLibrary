@@ -62,12 +62,12 @@ class BookCopy(models.Model):
 class Lending(models.Model):
     copy = models.ForeignKey(BookCopy)
     borrower = models.ForeignKey(Library, blank=True, null=True)
-    lend_date = models.DateTimeField(auto_now=True)
+    lend_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateTimeField(blank=True, null=True)
     is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         lender_name = self.copy.library.owner.user.username
         title = self.copy.book.title
-        borrower_name = self.borrower.owner.user.username
-        return lender_name + "'s " + title + ' lend to ' + borrower_name
+        borrower_name = self.borrower.owner.user.username if self.borrower else "outside the system"
+        return lender_name + "'s " + '"' + title + '" lent to ' + borrower_name + " on " + str(self.lend_date)
