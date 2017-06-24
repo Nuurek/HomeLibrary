@@ -53,7 +53,7 @@ class GoogleBooksAPI(object):
             book['page_count'] = volume_info['pageCount']
             book['cover'] = dict()
             book['cover']['url'] = '&'.join([volume_info['imageLinks']['thumbnail'].split('&')[0],
-                                      'printsec=frontcover', 'img=1', 'zoom=1'])
+                                      'printsec=frontcover', 'img=1', 'zoom=2'])
         except KeyError:
             return None
 

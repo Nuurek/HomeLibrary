@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Book, BookCopy, BookCoverPreview
-
+from .models import Book, BookCoverPreview
+from libraries.models import BookCopy
 
 admin.site.register(Book)
 admin.site.register(BookCopy)

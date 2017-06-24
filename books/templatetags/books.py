@@ -1,7 +1,8 @@
 from django.template import Library
 from django.forms.models import model_to_dict
 
-from books.models import BookCopy, Book
+from books.models import Book
+from libraries.models import BookCopy
 
 register = Library()
 

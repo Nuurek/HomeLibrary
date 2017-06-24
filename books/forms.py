@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
-from .models import Book, BookCopy
+from .models import Book
+from libraries.models import BookCopy
 
 
 class BookForm(ModelForm):

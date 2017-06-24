@@ -8,7 +8,7 @@ from django.utils.crypto import get_random_string
 from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
 
 from accounts.models import UserProfile
-from books.models import BookCopy
+from libraries.models import BookCopy
 from .forms import SendInvitationForm
 from .models import Library, Invitation
 

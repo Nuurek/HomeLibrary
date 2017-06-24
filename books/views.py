@@ -11,7 +11,8 @@ from django.views.generic import ListView
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm, BookCopyForm
 from .google_books_api import GoogleBooksAPI
-from .models import BookCoverPreview, BookCopy, Book
+from .models import BookCoverPreview, Book
+from libraries.models import BookCopy
 
 
 class BookCopyCreateView(LibraryGuestView, ListView):

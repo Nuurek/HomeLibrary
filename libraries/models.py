@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 
 from accounts.models import UserProfile
+from books.models import Book
 
 
 class Library(models.Model):
@@ -48,3 +49,25 @@ class Invitation(models.Model):
 
     def __str__(self):
         return "Invitation to " + self.library.name + " for " + self.email
+
+
+class BookCopy(models.Model):
+    book = models.ForeignKey(Book)
+    library = models.ForeignKey(Library)
+
+    def __str__(self):
+        return str(self.book) + ' in ' + str(self.library)
+
+
+class Lending(models.Model):
+    copy = models.ForeignKey(BookCopy)
+    borrower = models.ForeignKey(Library)
+    lend_date = models.DateTimeField(auto_now=True)
+    return_date = models.DateTimeField(blank=True, null=True)
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        lender_name = self.copy.library.owner.user.username
+        title = self.copy.book.title
+        borrower_name = self.borrower.owner.user.username
+        return lender_name + "'s " + title + ' lend to ' + borrower_name
