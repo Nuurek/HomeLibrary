@@ -5,19 +5,12 @@ from accounts.models import UserProfile
 from libraries.models import Library
 
 
-class GoogleBook(models.Model):
-    google_id = models.CharField(max_length=12, blank=True)
-    ISBN = models.CharField(max_length=13, blank=True)
-    ebook_link = models.URLField()
-
-
 class Book(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=1500)
     page_count = models.PositiveSmallIntegerField()
     author = models.CharField(max_length=50)
     cover = models.ImageField(upload_to='cover/', blank=True)
-    google_info = models.OneToOneField(GoogleBook, null=True, blank=True)
 
     class Meta:
         unique_together = ('title', 'author')

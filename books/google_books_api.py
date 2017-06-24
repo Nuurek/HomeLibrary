@@ -8,7 +8,9 @@ from .models import Book
 
 
 class GoogleBooksAPI(object):
-    api = discovery.build('books', 'v1')
+
+    def __init__(self):
+        self.api = discovery.build('books', 'v1')
 
     def search(self, query: str):
         query = query.strip()
@@ -16,7 +18,7 @@ class GoogleBooksAPI(object):
             return []
         query = query.replace(' ', '+')
 
-        request: HttpRequest = GoogleBooksAPI.api.volumes().list(
+        request: HttpRequest = self.api.volumes().list(
             q=query, printType='books', projection='full', maxResults=20
         )
         http = Http()
@@ -30,7 +32,7 @@ class GoogleBooksAPI(object):
         return books
 
     def get(self, volume_id):
-        request: HttpRequest = GoogleBooksAPI.api.volumes().get(volumeId=volume_id)
+        request: HttpRequest = self.api.volumes().get(volumeId=volume_id)
         http = Http()
         book = request.execute(http=http)
         return self.api_response_to_tag_dict(book)
@@ -52,10 +54,6 @@ class GoogleBooksAPI(object):
             book['cover'] = dict()
             book['cover']['url'] = '&'.join([volume_info['imageLinks']['thumbnail'].split('&')[0],
                                       'printsec=frontcover', 'img=1', 'zoom=1'])
-
-            pdf_info = api_book['accessInfo']['pdf']
-            if pdf_info['isAvailable'] and 'downloadLink' in pdf_info:
-                book['ebook_link'] = pdf_info['downloadLink']
         except KeyError:
             return None
 
