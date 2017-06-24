@@ -7,7 +7,7 @@
 			{% csrf_token %}
 			<div class="row">
 	      <div class="input-field col s10 offset-s1 l6 offset-l3 xl4 offset-xl4">
-	        {{ form.name | attr:'class:validate' | attr:'data-length:40' }}
+		      {% render_field form.name class+='validate' data-length=form.name.field.max_length %}
 	        <label for="{{ form.name.name }}">{{ form.name.label }}</label>
 	      </div>
 	    </div>

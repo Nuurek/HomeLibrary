@@ -1,0 +1,14 @@
+{% extends 'books/base.html' %}
+{% load books widget_tweaks %}
+
+
+{% block content %}
+	<div class="section">
+		<div class="row">
+			<h4>Lend this book:</h4>
+		</div>
+
+		{% render_book_copy bookcopy only_description=True %}
+	</div>
+
+{% endblock %}

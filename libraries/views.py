@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
-from django.views.generic.edit import BaseDeleteView, BaseUpdateView
+from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView
 from django.views.generic.list import BaseListView
 
 from accounts.models import UserProfile
@@ -15,7 +15,7 @@ from books.forms import BookCopyForm
 from books.models import Book
 from libraries.models import BookCopy
 from .forms import SendInvitationForm
-from .models import Library, Invitation
+from .models import Library, Invitation, Lending
 
 
 class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -45,13 +45,12 @@ class LibraryGuestTemplateView(LibraryGuestView, TemplateView):
         return context
 
 
-class LibraryDetailsView(LibraryGuestTemplateView):
+class LibraryDetailsView(BaseListView, LibraryGuestTemplateView):
+    context_object_name = 'book_copies'
     template_name = 'libraries/details.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(LibraryDetailsView, self).get_context_data(**kwargs)
-        context['book_copies'] = BookCopy.objects.filter(library=self.library)
-        return context
+    def get_queryset(self):
+        return BookCopy.objects.filter(library=self.library)
 
 
 class LibraryManagementView(LoginRequiredMixin, FormView):
@@ -190,3 +189,14 @@ class BookCopyCommentUpdateView(BaseUpdateView, LibraryGuestTemplateView):
 
     def get_success_url(self):
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
+
+
+class LendingCreateView(BaseCreateView, LibraryGuestTemplateView):
+    model = Lending
+    fields = ('borrower',)
+    template_name = 'libraries/lending_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(LendingCreateView, self).get_context_data(**kwargs)
+        context['bookcopy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
+        return context
