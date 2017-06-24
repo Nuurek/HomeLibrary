@@ -1,1 +1,1 @@
-setUpSearch('/book/copy/list');
+setUpSearch('copy/list');

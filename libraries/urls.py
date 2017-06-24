@@ -13,5 +13,7 @@ urlpatterns = [
         name='invitation_confirmation'),
     url(r'^invitation_delete/(?P<pk>[0-9]+)', InvitationDeleteView.as_view(), name='invitation_delete'),
     url(r'^guest_delete/(?P<pk>[0-9]+)', GuestDeleteView.as_view(), name='guest_delete'),
-    url(r'^book/', include(book_urls)),
+    url(r'^copy/list$', LibraryBookCopiesListView.as_view(), name='library_book_copies'),
+    url(r'^copy/create$', LibraryBookCopyCreateView.as_view(), name='book_copy_create'),
+    url(r'^copy/create/', include(book_urls)),
 ]

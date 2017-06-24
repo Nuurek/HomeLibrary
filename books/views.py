@@ -15,7 +15,7 @@ from .google_books_api import GoogleBooksAPI
 from .models import BookCoverPreview, Book
 
 
-class BookCreateView(LibraryGuestTemplateView, FormView):
+class BookCreateFormView(LibraryGuestTemplateView, FormView):
     form_class = BookForm
     template_name = 'books/book_create.html'
 
@@ -35,7 +35,7 @@ class BookCreateView(LibraryGuestTemplateView, FormView):
             cover_preview = BookCoverPreview(profile=user_profile, cover=form.cleaned_data.pop('cover'))
             cover_preview.save()
         self.request.session['book'] = form.cleaned_data
-        return super(BookCreateView, self).form_valid(form)
+        return super(BookCreateFormView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk})
