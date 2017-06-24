@@ -6,8 +6,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
-from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
-from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView
+from django.views.generic import TemplateView, DeleteView, ListView
+from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
 
 from accounts.models import UserProfile
@@ -18,7 +18,7 @@ from .forms import SendInvitationForm
 from .models import Library, Invitation, Lending
 
 
-class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
+class LibraryGuestTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     pk_url_kwarg = 'library_pk'
     raise_exception = True
     library = None
@@ -28,14 +28,11 @@ class LibraryGuestView(LoginRequiredMixin, UserPassesTestMixin, View):
         library_pk = kwargs.pop('library_pk')
         self.library = get_object_or_404(Library, pk=library_pk)
         self.is_owner = self.library.owner.user == self.request.user
-        return super(LibraryGuestView, self).dispatch(request, *args, **kwargs)
+        return super(LibraryGuestTemplateView, self).dispatch(request, *args, **kwargs)
 
     def test_func(self):
         profile = self.request.user.userprofile
         return profile == self.library.owner or profile in self.library.users.all()
-
-
-class LibraryGuestTemplateView(LibraryGuestView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -43,6 +40,13 @@ class LibraryGuestTemplateView(LibraryGuestView, TemplateView):
         context['library_pk'] = self.library.pk
         context['is_owner'] = self.is_owner
         return context
+
+
+class LibraryOwnerTemplateView(LibraryGuestTemplateView):
+
+    def test_func(self):
+        profile = self.request.user.userprofile
+        return profile == self.library.owner
 
 
 class LibraryDetailsView(BaseListView, LibraryGuestTemplateView):
@@ -53,30 +57,31 @@ class LibraryDetailsView(BaseListView, LibraryGuestTemplateView):
         return BookCopy.objects.filter(library=self.library)
 
 
-class LibraryManagementView(LoginRequiredMixin, FormView):
+class LibraryManagementView(BaseFormView, LibraryOwnerTemplateView):
     template_name = 'libraries/management.html'
     form_class = SendInvitationForm
     login_url = reverse_lazy('login')
-    success_url = reverse_lazy('library_management')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        library = self.request.user.userprofile.home_library
-        context['library'] = library
-        context['guests'] = library.users.all()
-        context['invitations'] = Invitation.objects.filter(library=library)
+        context['library'] = self.library
+        context['guests'] = self.library.users.all()
+        context['invitations'] = Invitation.objects.filter(library=self.library)
         return context
 
     def form_valid(self, form):
-        invitation = Invitation(library=self.request.user.userprofile.home_library, email=form.cleaned_data['email'],
+        invitation = Invitation(library=self.library, email=form.cleaned_data['email'],
                                 confirmation_code=get_random_string(32))
         invitation.save()
         domain = get_current_site(self.request)
         invitation.send_invitation_email(domain)
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
-class LibraryNameUpdateView(LoginRequiredMixin, UpdateView):
+
+class LibraryNameUpdateView(BaseUpdateView, LibraryOwnerTemplateView):
     template_name = 'libraries/update.html'
     model = Library
     fields = ('name', )
@@ -112,9 +117,13 @@ class InvitationConfirmationView(TemplateView):
         return context
 
 
-class InvitationDeleteView(DeleteView):
+class InvitationDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     model = Invitation
     success_url = reverse_lazy('library_management')
+    template_name = 'libraries/invitation_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
 
 class GuestDeleteView(DeleteView):
@@ -161,7 +170,7 @@ class BookCopyCreateView(BaseListView, LibraryGuestTemplateView):
             return HttpResponseForbidden()
 
 
-class BookCopiesListView(LibraryGuestView, ListView):
+class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
     model = BookCopy
     template_name = 'libraries/book_copies_list.html'
 
@@ -174,7 +183,7 @@ class BookCopiesListView(LibraryGuestView, ListView):
         )
 
 
-class BookCopyDeleteView(BaseDeleteView, LibraryGuestTemplateView):
+class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     model = BookCopy
     template_name = 'libraries/book_copy_delete.html'
 
@@ -182,7 +191,7 @@ class BookCopyDeleteView(BaseDeleteView, LibraryGuestTemplateView):
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
-class BookCopyCommentUpdateView(BaseUpdateView, LibraryGuestTemplateView):
+class BookCopyCommentUpdateView(BaseUpdateView, LibraryOwnerTemplateView):
     model = BookCopy
     fields = ('comment',)
     template_name = 'libraries/book_copy_comment.html'
@@ -191,7 +200,7 @@ class BookCopyCommentUpdateView(BaseUpdateView, LibraryGuestTemplateView):
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
-class LendingCreateView(BaseCreateView, LibraryGuestTemplateView):
+class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
     model = Lending
     fields = ('borrower',)
     template_name = 'libraries/lending_create.html'

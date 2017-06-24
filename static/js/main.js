@@ -34,6 +34,6 @@ function setUpSearch(booksPath) {
         }
         let query = $(event.target).val();
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() {getBooks(booksPath, query)}, 200);
+        timeoutId = setTimeout(function() {getBooks(booksPath, query)}, 100);
     });
 }

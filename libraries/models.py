@@ -40,7 +40,7 @@ class Invitation(models.Model):
             'library': self.library.name,
             'domain': domain,
             'link': reverse('invitation_confirmation', kwargs={
-                'library_id': self.library.pk,
+                'library_pk': self.library.pk,
                 'code': self.confirmation_code,
             }),
         })
