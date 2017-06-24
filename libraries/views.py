@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.generic import FormView, UpdateView, TemplateView, DeleteView, ListView, View
+from django.views.generic.edit import BaseDeleteView
+from django.views.generic.list import BaseListView
 
 from accounts.models import UserProfile
 from books.forms import BookCopyForm
@@ -139,18 +141,13 @@ class LibrariesListView(ListView):
         return context
 
 
-class LibraryBookCopyCreateView(LibraryGuestView, ListView):
+class BookCopyCreateView(BaseListView, LibraryGuestTemplateView):
     template_name = 'libraries/book_copy_create.html'
     model = Book
     context_object_name = 'books'
 
     def get_queryset(self):
         return Book.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super(LibraryBookCopyCreateView, self).get_context_data(**kwargs)
-        context['library_pk'] = self.library.pk
-        return context
 
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
@@ -161,7 +158,7 @@ class LibraryBookCopyCreateView(LibraryGuestView, ListView):
             return HttpResponseForbidden()
 
 
-class LibraryBookCopiesListView(LibraryGuestView, ListView):
+class BookCopiesListView(LibraryGuestView, ListView):
     model = BookCopy
     template_name = 'libraries/book_copies_list.html'
 
@@ -174,6 +171,9 @@ class LibraryBookCopiesListView(LibraryGuestView, ListView):
         )
 
 
-class LibraryBookCopyDeleteView(LibraryGuestView, DeleteView):
+class BookCopyDeleteView(BaseDeleteView, LibraryGuestTemplateView):
     model = BookCopy
     template_name = 'libraries/book_copy_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})

@@ -1,8 +1,12 @@
 {% extends 'books/tags/book_prototype_tag.html' %}
 
 {% block card_actions %}
-  <a type="submit" class="btn-floating btn waves-effect waves-light red"><i class="material-icons z-depth-2">delete</i></a>
+	{% if not only_description %}
+	  <a href="{% url 'book_copy_delete' library id %}" class="btn-floating btn waves-effect waves-light red"><i class="material-icons z-depth-2">delete</i></a>
+	{% endif %}
 	{{ block.super }}
-	<input title="book" name="book" type="text" hidden value="{{ id }}">
-  <button type="submit" class="btn-floating btn waves-effect waves-light green"><i class="material-icons z-depth-2">shopping_basket</i></button>
+	{% if not only_description %}
+		<input title="book" name="book" type="text" hidden value="{{ id }}">
+	  <button type="submit" class="btn-floating btn waves-effect waves-light green"><i class="material-icons z-depth-2">shopping_basket</i></button>
+	{% endif %}
 {% endblock %}

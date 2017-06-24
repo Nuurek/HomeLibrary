@@ -18,8 +18,15 @@ def render_google_book(book: dict):
 
 
 @register.inclusion_tag('books/tags/book_copy_tag.html')
-def render_book_copy(copy: BookCopy):
+def render_book_copy(copy: BookCopy, only_description: bool=False):
+    context = book_copy_to_dict(copy)
+    context['only_description'] = only_description
+    return context
+
+
+def book_copy_to_dict(copy: BookCopy):
     book_dict = model_to_dict(copy.book)
+    book_dict.pop('id')
     copy_dict = model_to_dict(copy)
     copy_dict.update(book_dict)
     return copy_dict
