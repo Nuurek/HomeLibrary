@@ -12,6 +12,12 @@
 					<h4 class="header">Fill in the book details</h4>
 
 					<div class="row">
+						{% for error in form.non_field_errors %}
+				      <p class="red-text center-align">{{ error }}</p>
+			      {% endfor %}
+					</div>
+
+					<div class="row">
 						<div class='input-field col s12 xl10 offset-xl1'>
 							<i class="material-icons prefix">subject</i>
 				      {{ form.title | attr:'class:validate' }}

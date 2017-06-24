@@ -1,17 +1,17 @@
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.temp import NamedTemporaryFile
 from django.db.models import Q
 from django.http import HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView
 from django.views.generic import ListView
-import requests
 
 from libraries.views import LibraryGuestTemplateView, LibraryGuestView
 from .forms import BookForm, BookPreviewForm
-from .models import BookCoverPreview, BookCopy, Book, GoogleBook
 from .google_books_api import GoogleBooksAPI
+from .models import BookCoverPreview, BookCopy, Book
 
 
 class BookCopyCreateView(LibraryGuestView, ListView):
@@ -97,22 +97,33 @@ class GoogleBookView(LibraryGuestTemplateView):
     def post(self, request):
         google_id = request.POST['google-id']
         api = GoogleBooksAPI()
-        book_data = api.get(google_id)
+        book_data: dict = api.get(google_id)
+
+        cover_url = book_data.pop('cover')
+        self.save_cover_preview(cover_url, google_id)
+
+        self.request.session['book'] = book_data
+        return HttpResponseRedirect(reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk}))
+
+    def save_cover_preview(self, cover_url, google_id):
         user_profile = self.request.user.userprofile
         try:
             BookCoverPreview.objects.get(profile=user_profile).delete()
         except BookCoverPreview.DoesNotExist:
             pass
-        cover_url = book_data.pop('cover')
+
+        image = self.download_cover(cover_url)
+        cover_preview = BookCoverPreview(profile=user_profile)
+        cover_preview.cover.save('google' + google_id, image, save=True)
+        cover_preview.save()
+
+    @staticmethod
+    def download_cover(cover_url):
         response = requests.get(cover_url)
         img_temp = NamedTemporaryFile(delete=True)
         img_temp.write(response.content)
         img_temp.flush()
-        cover_preview = BookCoverPreview(profile=user_profile)
-        cover_preview.cover.save('google' + google_id, img_temp, save=True)
-        cover_preview.save()
-        self.request.session['book'] = book_data
-        return HttpResponseRedirect(reverse_lazy('book_preview', kwargs={'library_pk': self.library.pk}))
+        return img_temp
 
 
 class LibraryBookCopiesListView(LibraryGuestView, ListView):
