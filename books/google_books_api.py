@@ -49,7 +49,8 @@ class GoogleBooksAPI(object):
             description = strip_tags(volume_info['description'])[0:Book._meta.get_field('description').max_length - 1]
             book['description'] = description
             book['page_count'] = volume_info['pageCount']
-            book['cover'] = '&'.join([volume_info['imageLinks']['thumbnail'].split('&')[0],
+            book['cover'] = dict()
+            book['cover']['url'] = '&'.join([volume_info['imageLinks']['thumbnail'].split('&')[0],
                                       'printsec=frontcover', 'img=1', 'zoom=1'])
 
             pdf_info = api_book['accessInfo']['pdf']

@@ -1,0 +1,8 @@
+{% extends 'books/tags/book_prototype_tag.html' %}
+
+{% block card_actions %}
+  <a type="submit" class="btn-floating btn waves-effect waves-light red"><i class="material-icons z-depth-2">delete</i></a>
+	{{ block.super }}
+	<input title="book" name="book" type="text" hidden value="{{ id }}">
+  <button type="submit" class="btn-floating btn waves-effect waves-light green"><i class="material-icons z-depth-2">shopping_basket</i></button>
+{% endblock %}
