@@ -2,7 +2,7 @@ from django.template import Library
 from django.forms.models import model_to_dict
 
 from books.models import Book
-from libraries.models import BookCopy
+from libraries.models import BookCopy, Lending
 
 register = Library()
 
@@ -30,4 +30,11 @@ def book_copy_to_dict(copy: BookCopy):
     book_dict.pop('id')
     copy_dict = model_to_dict(copy)
     copy_dict.update(book_dict)
+    try:
+        lending = copy.lending
+        if lending:
+            copy_dict['lending'] = dict()
+            copy_dict['lending']['borrower'] = lending.borrower.owner.user.username
+    except Lending.DoesNotExist:
+        pass
     return copy_dict

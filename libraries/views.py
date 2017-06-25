@@ -9,10 +9,10 @@ from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView, DeleteView, ListView
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
+from django.db.models import F
 
 from accounts.models import UserProfile
 from books.forms import BookCopyForm
-from books.models import Book
 from libraries.models import BookCopy
 from .forms import SendInvitationForm
 from .models import Library, Invitation, Lending
@@ -168,11 +168,12 @@ class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
 
     def get_queryset(self):
         query = self.request.GET['query']
-        return BookCopy.objects.filter(
+        book_copies = BookCopy.objects.filter(
             library=self.library
         ).filter(
             Q(book__title__contains=query) | Q(book__author__contains=query)
         )
+        return book_copies
 
 
 class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
