@@ -1,1 +1,1 @@
-setUpSearch('/list');
+setUpSearch('/list', false);

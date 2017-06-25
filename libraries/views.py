@@ -49,12 +49,8 @@ class LibraryOwnerTemplateView(LibraryGuestTemplateView):
         return profile == self.library.owner
 
 
-class LibraryDetailsView(BaseListView, LibraryGuestTemplateView):
-    context_object_name = 'book_copies'
+class LibraryDetailsView(LibraryGuestTemplateView):
     template_name = 'libraries/details.html'
-
-    def get_queryset(self):
-        return BookCopy.objects.filter(library=self.library)
 
 
 class LibraryManagementView(BaseFormView, LibraryOwnerTemplateView):
@@ -153,13 +149,8 @@ class LibrariesListView(ListView):
         return context
 
 
-class BookCopyCreateView(BaseListView, LibraryGuestTemplateView):
+class BookCopyCreateView(LibraryGuestTemplateView):
     template_name = 'libraries/book_copy_create.html'
-    model = Book
-    context_object_name = 'books'
-
-    def get_queryset(self):
-        return Book.objects.all()
 
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
@@ -173,6 +164,7 @@ class BookCopyCreateView(BaseListView, LibraryGuestTemplateView):
 class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
     model = BookCopy
     template_name = 'libraries/book_copies_list.html'
+    context_object_name = 'book_copies'
 
     def get_queryset(self):
         query = self.request.GET['query']

@@ -1,4 +1,4 @@
-function setUpSearch(booksPath) {
+function setUpSearch(booksPath, initialSearch=true) {
     const componentsPath = '/static/components/';
     const loaderFileName = 'loader.html';
 
@@ -27,15 +27,23 @@ function setUpSearch(booksPath) {
         loader = data;
     });
 
-    $('#search').on('input', function(event){
+    function searchBooks(query, timeout=100) {
         if (booksSection.find('#preloader').length === 0) {
             booksSection.empty();
             booksSection.html(loader);
         }
-        let query = $(event.target).val();
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() {getBooks(booksPath, query)}, 100);
+        timeoutId = setTimeout(function() {getBooks(booksPath, query)}, timeout);
+    }
+
+    $('#search').on('input', function(event){
+        let query = $(event.target).val();
+        searchBooks(query);
     });
+
+    if (initialSearch) {
+        searchBooks('', 0);
+    }
 }
 
 $(document).ready(function() {

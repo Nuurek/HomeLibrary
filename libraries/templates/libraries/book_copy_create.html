@@ -11,6 +11,7 @@
       </div>
 		</div>
 	</div>
+
 	<div class="section">
 		<h5 class="input-field">...or add book to our catalog</h5>
 		<div id="add-book-buttons" class="row">
@@ -22,15 +23,8 @@
 			</div>
 		</div>
 	</div>
-	<div id="books" class="section">
-		{% if books.count > 0 %}
-			{% for book in books %}
-				{% render_book book %}
-			{% endfor %}
-		{% else %}
-			{% include 'libraries/empty_library_message.html' %}
-		{% endif %}
-	</div>
+
+	<div id="books" class="section"></div>
 {% endblock %}
 
 {% block scripts %}

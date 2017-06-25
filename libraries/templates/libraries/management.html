@@ -27,7 +27,7 @@
 						<li class="collection-item">
 							<div>
 								{{ guest.user.username }}
-								<a href="{% url 'guest_delete' guest.user.userprofile.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
+								<a href="{% url 'guest_delete' library_pk=library.pk pk=guest.user.userprofile.id %}" class="secondary-content"><i class="material-icons">not_interested</i></a>
 							</div>
 						</li>
 					{% endfor %}

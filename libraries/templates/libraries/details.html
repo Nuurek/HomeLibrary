@@ -16,15 +16,8 @@
 			</div>
 		</div>
 	</div>
-	<div id="books" class="section">
-		{% if book_copies.count > 0 %}
-			{% for copy in book_copies %}
-				{% render_book_copy copy is_owner=is_owner %}
-			{% endfor %}
-		{% else %}
-			{% include 'libraries/empty_library_message.html' %}
-		{% endif %}
-	</div>
+
+	<div id="books" class="section"></div>
 {% endblock %}
 
 {% block scripts %}

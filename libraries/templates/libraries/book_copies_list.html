@@ -1,8 +1,8 @@
 {% load books %}
 
-{% if bookcopy_list.count > 0 %}
-	{% for copy in bookcopy_list %}
-		{% render_book_copy copy %}
+{% if book_copies.count > 0 %}
+	{% for copy in book_copies %}
+		{% render_book_copy copy is_owner=is_owner %}
 	{% endfor %}
 {% else %}
 	{% include 'libraries/empty_library_message.html' %}
