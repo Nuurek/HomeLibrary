@@ -1,3 +1,17 @@
+function filterBooks() {
+    let chips = $('.chip');
+    $.each(chips, function(index, item) {
+        let chip = $(item);
+        let type = chip.attr('id');
+        let typeCards = $('.' + type);
+        if (chip.hasClass('selected')) {
+            typeCards.fadeIn();
+        } else {
+            typeCards.fadeOut();
+        }
+    });
+}
+
 function setUpSearch(booksPath, initialSearch=true) {
     const componentsPath = '/static/components/';
     const loaderFileName = 'loader.html';
@@ -5,17 +19,17 @@ function setUpSearch(booksPath, initialSearch=true) {
     let booksSection = $('#books');
     function updateBooks(data) {
         booksSection.html(data);
+        filterBooks();
     }
 
     function getBooks(path, query) {
         let url = window.location.pathname + path;
-        let data = {
-            query: query
-        };
         $.ajax({
             dataType: 'html',
             url: url,
-            data: data,
+            data: {
+                query: query,
+            },
             success: updateBooks
         });
     }
@@ -27,7 +41,7 @@ function setUpSearch(booksPath, initialSearch=true) {
         loader = data;
     });
 
-    function searchBooks(query, timeout=100) {
+    function searchBooks(query, timeout=200) {
         if (booksSection.find('#preloader').length === 0) {
             booksSection.empty();
             booksSection.html(loader);
@@ -37,7 +51,7 @@ function setUpSearch(booksPath, initialSearch=true) {
     }
 
     $('#search').on('input', function(event){
-        let query = $(event.target).val();
+        query = $(event.target).val();
         searchBooks(query);
     });
 

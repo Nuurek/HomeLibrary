@@ -7,7 +7,7 @@
 			<h1>Welcome to {{ library.name }}</h1>
 			<h3 class="text-accent-1">You has been added as an active user</h3>
 			<div class="divider"></div>
-			<a href="#">Go to the library page</a>
+			<a href="{% url 'library_details' library.pk %}">Go to the library page</a>
 		{% else %}
 			<h3 class="red-text">This link is invalid!</h3>
 			<div class="divider"></div>

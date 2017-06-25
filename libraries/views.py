@@ -174,7 +174,7 @@ class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
             Q(book__title__contains=query) | Q(book__author__contains=query)
         )
         borrowed_book_copies = BookCopy.objects.filter(lending__borrower=self.library)
-        return book_copies | borrowed_book_copies
+        return (book_copies | borrowed_book_copies).order_by('-book__title')
 
 
 class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
