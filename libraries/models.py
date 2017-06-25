@@ -60,7 +60,7 @@ class BookCopy(models.Model):
 
 
 class Lending(models.Model):
-    copy = models.OneToOneField(BookCopy)
+    copy = models.OneToOneField(BookCopy, on_delete=models.CASCADE)
     borrower = models.ForeignKey(Library, blank=True, null=True)
     lend_date = models.DateTimeField(auto_now_add=True)
     return_date = models.DateTimeField(blank=True, null=True)

@@ -31,10 +31,7 @@ def book_copy_to_dict(copy: BookCopy):
     copy_dict = model_to_dict(copy)
     copy_dict.update(book_dict)
     try:
-        lending = copy.lending
-        if lending:
-            copy_dict['lending'] = dict()
-            copy_dict['lending']['borrower'] = lending.borrower.owner.user.username
+        copy_dict['lending'] = copy.lending
     except Lending.DoesNotExist:
         pass
     return copy_dict
