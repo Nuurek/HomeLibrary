@@ -31,7 +31,7 @@ def book_copy_to_dict(copy: BookCopy):
     copy_dict = model_to_dict(copy)
     copy_dict.update(book_dict)
     try:
-        copy_dict['lending'] = copy.lending
+        copy_dict['lending'] = copy.lending_set.get(is_completed=False)
     except Lending.DoesNotExist:
         pass
     return copy_dict
