@@ -29,12 +29,29 @@
 	  {{ block.super }}
   {% endif %}
 	{% if lending %}
-		<h5>Lent to <b>{{ lending.borrower.owner.user.username }}</b></h5>
+		<h5>
+			{% if lent %}
+				Lent to
+			{% elif borrowed %}
+				Borrowed from
+			{% endif %}
+			<b>
+				{% if lent %}
+					{{ borrower }}
+				{% elif borrowed %}
+					{{ lender }}
+				{% endif %}
+			</b>
+		</h5>
 	{% endif %}
 {% endblock %}
 
 {% block card_classes %}
 	{% if lending %}
-		grey lighten-2
+		{% if lent %}
+			grey lighten-3
+		{% elif borrowed %}
+			green lighten-3
+		{% endif %}
 	{% endif %}
 {% endblock %}

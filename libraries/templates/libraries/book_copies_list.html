@@ -2,7 +2,7 @@
 
 {% if book_copies.count > 0 %}
 	{% for copy in book_copies %}
-		{% render_book_copy copy is_owner=is_owner %}
+		{% render_book_copy copy is_owner=is_owner library=library %}
 	{% endfor %}
 {% else %}
 	{% include 'libraries/empty_library_message.html' %}

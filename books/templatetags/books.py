@@ -22,6 +22,19 @@ def render_book_copy(copy: BookCopy, **kwargs):
     context = book_copy_to_dict(copy)
     context['only_description'] = kwargs.get('only_description', False)
     context['is_owner'] = kwargs.get('is_owner', False)
+    try:
+        lending = copy.lending_set.get(is_completed=False)
+        context['lending'] = lending
+
+        library = kwargs.get('library')
+        if library == lending.borrower:
+            context['borrowed'] = True
+            context['lender'] = copy.library.owner.user.username
+        else:
+            context['lent'] = True
+            context['borrower'] = lending.borrower.owner.user.username
+    except Lending.DoesNotExist:
+        pass
     return context
 
 
@@ -30,8 +43,4 @@ def book_copy_to_dict(copy: BookCopy):
     book_dict.pop('id')
     copy_dict = model_to_dict(copy)
     copy_dict.update(book_dict)
-    try:
-        copy_dict['lending'] = copy.lending_set.get(is_completed=False)
-    except Lending.DoesNotExist:
-        pass
     return copy_dict
