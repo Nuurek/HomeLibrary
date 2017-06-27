@@ -9,6 +9,7 @@ from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView, DeleteView, ListView
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
+from datetime import datetime
 
 from accounts.models import UserProfile
 from books.forms import BookCopyForm
@@ -121,17 +122,19 @@ class InvitationDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
         return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
 
-class GuestDeleteView(DeleteView):
+class GuestDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     model = UserProfile
-    success_url = reverse_lazy('library_management')
     template_name = 'libraries/guest_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        success_url = self.get_success_url()
+        guest: UserProfile = self.get_object()
+        Lending.objects.filter(borrower=guest.home_library).update(is_completed=True, return_date=datetime.now())
         library = self.request.user.userprofile.home_library
-        library.users.remove(self.object)
-        return HttpResponseRedirect(success_url)
+        library.users.remove(guest)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
 
 class LibrariesListView(ListView):
@@ -168,12 +171,13 @@ class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
     def get_queryset(self):
         query = self.request.GET['query']
         book_copies = BookCopy.objects.filter(
-            library=self.library
-        ).filter(
+            Q(library=self.library) | Q(Q(lending__borrower=self.library) & Q(lending__is_completed=False))
+        ).distinct().filter(
             Q(book__title__contains=query) | Q(book__author__contains=query)
+        ).order_by(
+            'book__title'
         )
-        borrowed_book_copies = BookCopy.objects.filter(lending__borrower=self.library)
-        return (book_copies | borrowed_book_copies).order_by('book__title')
+        return book_copies
 
 
 class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
@@ -225,8 +229,6 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
         lending = form.save(commit=False)
         lending.copy = get_object_or_404(BookCopy, pk=self.kwargs['pk'])
         lending.save()
-        print(lending)
-        print(Lending.objects.all())
         return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
 
     def get_success_url(self):
@@ -244,6 +246,13 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
         context = super(LendingDeleteView, self).get_context_data(**kwargs)
         context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
         return context
+
+    def delete(self, request, *args, **kwargs):
+        lending = self.get_object()
+        lending.is_completed = True
+        lending.return_date = datetime.now()
+        lending.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy('library_details', kwargs={'library_pk': self.request.user.userprofile.home_library.pk})
