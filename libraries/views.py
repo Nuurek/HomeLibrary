@@ -198,6 +198,17 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
     fields = ('borrower',)
     template_name = 'libraries/lending_create.html'
 
+    def test_func(self):
+        if not super(LendingCreateView, self).test_func():
+            return False
+
+        book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
+        try:
+            Lending.objects.get(copy=book_copy, is_completed=False)
+            return False
+        except Lending.DoesNotExist:
+            return True
+
     def get_form(self, form_class=None):
         form = super(LendingCreateView, self).get_form(form_class)
         form.fields['borrower'].empty_label = "Outside the system"
