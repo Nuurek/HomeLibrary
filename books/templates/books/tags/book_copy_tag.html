@@ -20,7 +20,11 @@
 		{% endif %}
 
 		{% if is_return_available %}
-			<a href="{% url 'lending_delete' library id %}" class="btn-floating btn waves-effect waves-light red"><i class="material-icons z-depth-2">assignment_ind</i></a>
+
+				<a href="{% if library %}{% url 'lending_delete' library id %}{% else %}{% url 'lending_delete' user_library id %}{% endif %}"
+				   class="btn-floating btn waves-effect waves-light red">
+					<i class="material-icons z-depth-2">assignment_ind</i>
+				</a>
 		{% endif %}
 	{% endif %}
 {% endblock %}
@@ -46,7 +50,11 @@
 						outside the system
 					{% endif %}
 				{% elif borrowed %}
-					{{ lender }}
+					{% if lender %}
+						{{ lender }}
+					{% else %}
+						outside the system
+					{% endif %}
 				{% endif %}
 			</b>
 		</h5>

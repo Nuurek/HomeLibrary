@@ -52,7 +52,7 @@ class Invitation(models.Model):
 
 class BookCopy(models.Model):
     book = models.ForeignKey(Book)
-    library = models.ForeignKey(Library)
+    library = models.ForeignKey(Library, null=True, blank=True)
     comment = models.TextField(max_length=200, blank=True)
 
     def __str__(self):
@@ -67,7 +67,7 @@ class Lending(models.Model):
     is_completed = models.BooleanField(default=False)
 
     def __str__(self):
-        lender_name = self.copy.library.owner.user.username
+        lender_name = self.copy.library.owner.user.username if self.copy.library else "Anonym"
         title = self.copy.book.title
         borrower_name = self.borrower.owner.user.username if self.borrower else "outside the system"
         return lender_name + "'s " + '"' + title + '" lent to ' + borrower_name + " on " + str(self.lend_date)

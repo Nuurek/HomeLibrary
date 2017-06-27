@@ -1,0 +1,27 @@
+{% extends 'books/base.html' %}
+{% load books widget_tweaks %}
+
+
+{% block content %}
+	<div class="section">
+		<div class="row">
+			<h4>Do you want to borrow this book from outside the system?</h4>
+		</div>
+
+		{% render_book_copy book_copy user only_description=True %}
+
+		<div class="row">
+			<div class="section">
+				<div class="col s6 m2 offset-m4">
+				  <a href="{% url 'library_details' library_pk %}" class="btn-floating btn-large waves-effect waves-light red z-depth-1">
+					  <i class="material-icons">not_interested</i>
+				  </a>
+				</div>
+				<form method="post" class="col s6 m2">
+					{% csrf_token %}
+					<button type="submit" class="btn-floating btn-large waves-effect waves-light green z-depth-1"><i class="material-icons">done</i></button>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

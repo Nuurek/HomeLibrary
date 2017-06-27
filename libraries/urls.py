@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 
 from .views import *
 from books import urls as book_urls
+from books.views import BookListView
 
 
 urlpatterns = [
@@ -20,4 +21,7 @@ urlpatterns = [
     url(r'^copy/create/', include(book_urls)),
     url(r'^copy/(?P<pk>[0-9]+)/lend$', LendingCreateView.as_view(), name='lending_create'),
     url(r'^copy/(?P<pk>[0-9]+)/return$', LendingDeleteView.as_view(), name='lending_delete'),
+    url(r'^outside_lending$', OutsideLendingCreateView.as_view(), name='outside_lending_create'),
+    url(r'^outside_lending/list$', BookListView.as_view()),
+    url(r'^outside_lending/(?P<pk>[0-9]+)$', OutsideLendingConfirmView.as_view(), name='outside_lending_confirm'),
 ]

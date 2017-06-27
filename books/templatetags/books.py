@@ -23,6 +23,7 @@ def render_book_copy(copy: BookCopy, user: User, **kwargs):
     context = book_copy_to_dict(copy)
     context['only_description'] = kwargs.get('only_description', False)
     library = kwargs.get('library')
+    context['user_library'] = user.userprofile.home_library.pk
     context['is_owner'] = library == user.userprofile.home_library
     is_book_owner = copy.library == user.userprofile.home_library
     context['is_book_owner'] = is_book_owner
@@ -33,7 +34,7 @@ def render_book_copy(copy: BookCopy, user: User, **kwargs):
         library = kwargs.get('library')
         if library == lending.borrower:
             context['borrowed'] = True
-            context['lender'] = copy.library.owner.user.username
+            context['lender'] = copy.library.owner.user.username if copy.library else None
         else:
             context['lent'] = True
             context['borrower'] = lending.borrower.owner.user.username if lending.borrower else None

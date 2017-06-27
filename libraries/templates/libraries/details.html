@@ -5,9 +5,15 @@
 	<h4>{{ library.owner.user.username }} - {{ library.name }}</h4>
 	<div id="book-search" class="section">
 		<div class="row">
-			<div class="col s12">
-				<a href="{% url 'book_copy_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
-			</div>
+			{% if is_owner %}
+				<div class="col s12">
+					<a href="{% url 'book_copy_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
+					<a href="{% url 'outside_lending_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add lending</a>
+
+				</div>
+				<div class="col s12">
+				</div>
+			{% endif %}
 			<div class="col s12 m8 offset-m2 l10 offset-l1">
 	      <div class="input-field">
 	        <input id="search" type="search" placeholder="Search in this library" required>

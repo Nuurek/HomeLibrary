@@ -114,7 +114,7 @@ class BookListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query = self.request.GET['query']
-        books = Book.objects.filter(Q(title__contains=query) | Q(author__contains=query))
+        books = Book.objects.filter(Q(title__contains=query) | Q(author__contains=query)).order_by('title')
         return books
 
 

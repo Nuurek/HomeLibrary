@@ -256,3 +256,43 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
 
     def get_success_url(self):
         return reverse_lazy('library_details', kwargs={'library_pk': self.request.user.userprofile.home_library.pk})
+
+
+class OutsideLendingCreateView(LibraryOwnerTemplateView):
+    template_name = 'libraries/outside_lending_create.html'
+
+    def post(self, request):
+        form = BookCopyForm({'book': request.POST['book'], 'library': None})
+        if form.is_valid():
+            book_copy = form.save()
+            return HttpResponseRedirect(reverse_lazy('outside_lending_confirm', kwargs={
+                'library_pk': self.library.pk,
+                'pk': book_copy.pk,
+            }))
+        else:
+            return HttpResponseForbidden()
+
+
+class OutsideLendingConfirmView(LibraryOwnerTemplateView):
+    template_name = 'libraries/outside_lending_confirm.html'
+
+    def test_func(self):
+        if not super(OutsideLendingConfirmView, self).test_func():
+            return False
+
+        book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
+        if book_copy.library is not None:
+            return False
+        else:
+            return True
+
+    def get_context_data(self, **kwargs):
+        context = super(OutsideLendingConfirmView, self).get_context_data(**kwargs)
+        context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def post(self, request, *args, **kwargs):
+        book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
+        lending = Lending.objects.create(copy=book_copy, borrower=self.library)
+        lending.save()
+        return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
