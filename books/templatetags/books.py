@@ -32,7 +32,7 @@ def render_book_copy(copy: BookCopy, **kwargs):
             context['lender'] = copy.library.owner.user.username
         else:
             context['lent'] = True
-            context['borrower'] = lending.borrower.owner.user.username
+            context['borrower'] = lending.borrower.owner.user.username if lending.borrower else None
     except Lending.DoesNotExist:
         pass
     return context

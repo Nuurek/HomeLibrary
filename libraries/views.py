@@ -9,7 +9,6 @@ from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView, DeleteView, ListView
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
-from django.db.models import F
 
 from accounts.models import UserProfile
 from books.forms import BookCopyForm
@@ -174,7 +173,7 @@ class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
             Q(book__title__contains=query) | Q(book__author__contains=query)
         )
         borrowed_book_copies = BookCopy.objects.filter(lending__borrower=self.library)
-        return (book_copies | borrowed_book_copies).order_by('-book__title')
+        return (book_copies | borrowed_book_copies).order_by('book__title')
 
 
 class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):

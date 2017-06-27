@@ -31,13 +31,17 @@
 	{% if lending %}
 		<h5>
 			{% if lent %}
-				Lent to
+				Lent {% if borrower %}to {% endif %}
 			{% elif borrowed %}
 				Borrowed from
 			{% endif %}
 			<b>
 				{% if lent %}
-					{{ borrower }}
+					{% if borrower %}
+						{{ borrower }}
+					{% else %}
+						outside the system
+					{% endif %}
 				{% elif borrowed %}
 					{{ lender }}
 				{% endif %}
