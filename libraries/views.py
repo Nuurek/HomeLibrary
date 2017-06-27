@@ -231,3 +231,19 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
 
     def get_success_url(self):
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
+
+
+class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
+    model = Lending
+    template_name = 'libraries/lending_delete.html'
+
+    def get_object(self, queryset=None):
+        return Lending.objects.get(copy=BookCopy.objects.get(pk=self.kwargs['pk']), is_completed=False)
+
+    def get_context_data(self, **kwargs):
+        context = super(LendingDeleteView, self).get_context_data(**kwargs)
+        context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('library_details', kwargs={'library_pk': self.request.user.userprofile.home_library.pk})

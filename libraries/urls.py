@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^copy/comment/(?P<pk>[0-9]+)$', BookCopyCommentUpdateView.as_view(), name='book_copy_comment'),
     url(r'^copy/create/', include(book_urls)),
     url(r'^copy/(?P<pk>[0-9]+)/lend$', LendingCreateView.as_view(), name='lending_create'),
+    url(r'^copy/(?P<pk>[0-9]+)/return$', LendingDeleteView.as_view(), name='lending_delete'),
 ]
