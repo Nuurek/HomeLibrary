@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from datetime import datetime
 
 from accounts.models import UserProfile
 from books.models import Book
@@ -69,5 +70,9 @@ class Lending(models.Model):
     def __str__(self):
         lender_name = self.copy.library.owner.user.username if self.copy.library else "Anonym"
         title = self.copy.book.title
-        borrower_name = self.borrower.owner.user.username if self.borrower else "outside the system"
-        return lender_name + "'s " + '"' + title + '" lent to ' + borrower_name + " on " + str(self.lend_date)
+        borrower_name = self.borrower.owner.user.username if self.borrower else "Anonym"
+        date = datetime.date(self.lend_date)
+        date = date.strftime('%d.%m.%Y')
+        full_name = lender_name + "'s " + '"' + title + '" lent to ' + borrower_name + " on " + date
+        return ("[COMPLETED] " if self.is_completed else '') + full_name
+

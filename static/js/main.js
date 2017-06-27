@@ -7,7 +7,7 @@ function filterBooks() {
         if (chip.hasClass('selected')) {
             typeCards.fadeIn();
         } else {
-            typeCards.fadeOut();
+            typeCards.hide();
         }
     });
 }

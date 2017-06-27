@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^copy/(?P<pk>[0-9]+)/return$', LendingDeleteView.as_view(), name='lending_delete'),
     url(r'^outside_lending$', OutsideLendingCreateView.as_view(), name='outside_lending_create'),
     url(r'^outside_lending/list$', BookListView.as_view()),
-    url(r'^outside_lending/(?P<pk>[0-9]+)$', OutsideLendingConfirmView.as_view(), name='outside_lending_confirm'),
+    url(r'^outside_lending/(?P<pk>[0-9]+)', OutsideLendingConfirmView.as_view(), name='outside_lending_confirm'),
 ]
