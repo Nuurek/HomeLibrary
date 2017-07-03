@@ -76,3 +76,16 @@ class Lending(models.Model):
         full_name = lender_name + "'s " + '"' + title + '" lent to ' + borrower_name + " on " + date
         return ("[COMPLETED] " if self.is_completed else '') + full_name
 
+
+class Reading(models.Model):
+    copy = models.ForeignKey(BookCopy, on_delete=models.CASCADE)
+    reader = models.ForeignKey(UserProfile)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        reader_name = self.reader.user.username
+        title = self.copy.book.title
+        full_name = title + ' read by ' + reader_name
+        return "[" + ("COMPLETED" if self.is_completed else self.start_date.strftime('%d.%m.%Y')) + "]" + full_name
