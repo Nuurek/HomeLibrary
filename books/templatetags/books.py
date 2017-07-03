@@ -39,7 +39,7 @@ def render_book_copy(copy: BookCopy, user: User, **kwargs):
             context['lent'] = True
             context['borrower'] = lending.borrower.owner.user.username if lending.borrower else None
 
-        context['is_return_available'] = is_book_owner or user == lending.borrower.owner.user
+        context['is_return_available'] = is_book_owner or (lending.borrower and user == lending.borrower.owner.user)
     except Lending.DoesNotExist:
         context['is_lending_available'] = is_book_owner
     return context

@@ -22,7 +22,12 @@
 		      <form method="post">
 		        {% csrf_token %}
             {% block card_actions %}
-		          <a class="btn-floating activator btn waves-effect waves-light"><i class="material-icons z-depth-2">description</i></a>
+		          <a
+				          class="btn-floating activator btn waves-effect waves-light tooltipped"
+				          data-tooltip="Show description"
+		          >
+			          <i class="material-icons z-depth-2">description</i>
+		          </a>
             {% endblock %}
 		      </form>
 		    </div>

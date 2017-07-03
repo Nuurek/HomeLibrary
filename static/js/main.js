@@ -12,6 +12,13 @@ function filterBooks() {
     });
 }
 
+function addButtonTooltip() {
+    $('.tooltipped').tooltip({
+        'delay': 200,
+        'position': 'top',
+    });
+}
+
 function setUpSearch(booksPath, initialSearch=true) {
     const componentsPath = '/static/components/';
     const loaderFileName = 'loader.html';
@@ -19,6 +26,7 @@ function setUpSearch(booksPath, initialSearch=true) {
     let booksSection = $('#books');
     function updateBooks(data) {
         booksSection.html(data);
+        addButtonTooltip();
         filterBooks();
     }
 
@@ -62,4 +70,5 @@ function setUpSearch(booksPath, initialSearch=true) {
 
 $(document).ready(function() {
     $('select').material_select();
+    addButtonTooltip();
 });
