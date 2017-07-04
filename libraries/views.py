@@ -1,13 +1,12 @@
-from datetime import datetime
-
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
@@ -134,7 +133,7 @@ class GuestDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
 
     def delete(self, request, *args, **kwargs):
         guest: UserProfile = self.get_object()
-        Lending.objects.filter(borrower=guest.home_library).update(is_completed=True, return_date=datetime.now())
+        Lending.objects.filter(borrower=guest.home_library).update(is_completed=True, return_date=timezone.now())
         library = self.request.user.userprofile.home_library
         library.users.remove(guest)
         return HttpResponseRedirect(self.get_success_url())
@@ -258,7 +257,7 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
     def delete(self, request, *args, **kwargs):
         lending = self.get_object()
         lending.is_completed = True
-        lending.return_date = datetime.now()
+        lending.return_date = timezone.now()
         lending.save()
         messages.success(self.request, "\"" + lending.copy.book.title + "\" returned")
         return HttpResponseRedirect(self.get_success_url())
