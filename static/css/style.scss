@@ -22,6 +22,14 @@ body {
   .primary-color-light-text {
     color: $primary-color-light;
   }
+
+  .book-card {
+
+    form {
+      display: inline-block;
+    }
+  }
+;
 }
 
 

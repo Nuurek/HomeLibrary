@@ -19,8 +19,7 @@
               {{ description | truncatewords:20}}
 			      {% endblock %}
 		      </div>
-		      <form method="post">
-		        {% csrf_token %}
+		      <div>
             {% block card_actions %}
 		          <a
 				          class="btn-floating activator btn waves-effect waves-light tooltipped"
@@ -29,7 +28,7 @@
 			          <i class="material-icons z-depth-2">description</i>
 		          </a>
             {% endblock %}
-		      </form>
+		      </div>
 		    </div>
 		  </div>
 		  <div class="card-reveal">
