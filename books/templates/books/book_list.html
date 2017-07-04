@@ -2,7 +2,11 @@
 
 {% if book_list.count > 0 %}
 	{% for book in book_list %}
-		{% render_book book %}
+		<div class="row">
+			<div class="col s12 xl8 offset-xl2">
+				{% render_book book %}
+			</div>
+		</div>
 	{% endfor %}
 {% else %}
 	{% include 'libraries/empty_library_message.html' %}

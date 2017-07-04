@@ -59,12 +59,13 @@
 {% endblock %}
 
 {% block comment %}
-  {% if comment %}
-    {{ comment }}
-  {% else %}
-	  {{ block.super }}
-  {% endif %}
-	{% if lending %}
+	{% if not lending %}
+		{% if comment %}
+	    {{ comment }}
+	  {% else %}
+		  {{ block.super }}
+	  {% endif %}
+	{% else %}
 		<h5>
 			{% if lent %}
 				Lent to

@@ -8,7 +8,11 @@
 			<h4>Do you really want to return following book?</h4>
 		</div>
 
-		{% render_book_copy book_copy user only_description=True library=library %}
+		<div class="row">
+			<div class="col s12 xl8 offset-xl2">
+				{% render_book_copy book_copy user only_description=True library=library %}
+			</div>
+		</div>
 
 		<div class="row">
 			<div class="section">

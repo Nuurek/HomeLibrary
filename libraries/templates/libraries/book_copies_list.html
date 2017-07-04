@@ -2,7 +2,11 @@
 
 {% if book_copies.count > 0 %}
 	{% for copy in book_copies %}
-		{% render_book_copy copy user library=library %}
+		<div class="row">
+			<div class="col s12 xl8 offset-xl2">
+				{% render_book_copy copy user library=library %}
+			</div>
+		</div>
 	{% endfor %}
 {% else %}
 	{% include 'libraries/empty_library_message.html' %}

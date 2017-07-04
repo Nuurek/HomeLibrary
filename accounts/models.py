@@ -39,8 +39,14 @@ class UserProfile(models.Model):
     def pages_per_day(self):
         key = 'copy__book__page_count'
         pages = self.reading_set.filter(is_completed=True).aggregate(Sum(key))[key + '__sum']
-        period = self.get_period_since_join()
-        return int(pages / period.days)
+        if pages:
+            period = self.get_period_since_join()
+            return int(pages / period.days)
+        else:
+            return 0
+
+    def last_read_book(self):
+        return self.reading_set.filter(is_completed=True).order_by('-end_date').first()
 
     def currently_read_books(self):
         return self.reading_set.filter(is_completed=False).all().select_related('copy')

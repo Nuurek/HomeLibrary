@@ -21,7 +21,12 @@ def render_google_book(book: dict):
 @register.inclusion_tag('books/tags/book_copy_tag.html')
 def render_book_copy(copy: BookCopy, user: User, **kwargs):
     context = book_copy_to_dict(copy)
-    context['only_description'] = kwargs.get('only_description', False)
+    clean = kwargs.get('clean', False)
+    context['clean'] = clean
+    if clean:
+        context['only_description'] = True
+    else:
+        context['only_description'] = kwargs.get('only_description', False)
     library = kwargs.get('library')
     context['user_library'] = user.userprofile.home_library.pk
     context['is_owner'] = library == user.userprofile.home_library
