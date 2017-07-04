@@ -30,6 +30,7 @@ def render_book_copy(copy: BookCopy, user: User, **kwargs):
     context['is_read'] = Reading.objects.filter(copy=copy)
     is_kept_by_user = copy.is_kept_by(user.userprofile)
     context['is_kept_by_user'] = is_kept_by_user
+    context['is_read'] = Reading.objects.filter(copy=copy, reader=user.userprofile, is_completed=False).exists()
     if is_kept_by_user:
         context['is_read'] = Reading.objects.filter(copy=copy, reader=user.userprofile, is_completed=False).exists()
     try:
