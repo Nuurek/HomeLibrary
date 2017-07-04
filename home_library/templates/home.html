@@ -28,6 +28,7 @@
 				</div>
 			{% endif %}
 		</div>
+	
 		<div class="col s12 l4 offset-l1 z-depth-1">
 			<h5>Last read</h5>
 			<div class="card">
@@ -58,6 +59,42 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="row">
+		{% if lent_books %}
+			<div class="col s12 container z-depth-1">
+				<h5>Lent books</h5>
+				<div class="">
+					{% for copy in lent_books %}
+						<div class="row">
+							<div class="col s12 xl8 offset-xl2">
+								{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		{% endif %}
+	</div>
+
+	<div class="row">
+		{% if lent_books %}
+			<div class="col s12 container z-depth-1">
+				<h5>Borrowed books</h5>
+				<div class="">
+					{% for copy in borrowed_books %}
+						<div class="row">
+							<div class="col s12 xl8 offset-xl2">
+								{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}
 
