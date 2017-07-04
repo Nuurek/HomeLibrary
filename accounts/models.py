@@ -1,5 +1,7 @@
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
@@ -27,3 +29,24 @@ class UserProfile(models.Model):
     def activate_user(self):
         self.user.is_active = True
         self.user.save()
+
+    def books_per_month(self):
+        books_read = self.reading_set.filter(is_completed=True).count()
+        period = self.get_period_since_join()
+        months = int(period.days / 30.4 + 1)
+        return books_read / months
+
+    def pages_per_day(self):
+        key = 'copy__book__page_count'
+        pages = self.reading_set.filter(is_completed=True).aggregate(Sum(key))[key + '__sum']
+        period = self.get_period_since_join()
+        return int(pages / period.days)
+
+    def currently_read_books(self):
+        return self.reading_set.filter(is_completed=False).all().select_related('copy')
+
+    def lent_books(self):
+        return self.home_library.bookcopy_set.filter(lending__is_completed=False)
+
+    def get_period_since_join(self):
+        return timezone.now() - self.user.date_joined
