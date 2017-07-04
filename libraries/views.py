@@ -1,15 +1,17 @@
+from datetime import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
-from django.views.generic import TemplateView, DeleteView, ListView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
-from datetime import datetime
 
 from accounts.models import UserProfile
 from books.forms import BookCopyForm
@@ -71,6 +73,8 @@ class LibraryManagementView(BaseFormView, LibraryOwnerTemplateView):
         invitation.save()
         domain = get_current_site(self.request)
         invitation.send_invitation_email(domain)
+
+        messages.success(self.request, "Invitation for " + invitation.email + " sent")
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -89,6 +93,7 @@ class LibraryNameUpdateView(BaseUpdateView, LibraryOwnerTemplateView):
         library = self.request.user.userprofile.home_library
         library.is_name_default = False
         library.save()
+        messages.success(self.request, "Library name changed to " + library.name)
         return super().form_valid(form)
 
 
@@ -119,6 +124,7 @@ class InvitationDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     template_name = 'libraries/invitation_confirm_delete.html'
 
     def get_success_url(self):
+        messages.success(self.request, "Invitation for " + self.object.email + " deleted")
         return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
 
@@ -134,6 +140,7 @@ class GuestDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
+        messages.success(self.request, "Access for " + self.object.user.username + " has been revoked")
         return reverse_lazy('library_management', kwargs={'library_pk': self.library.pk})
 
 
@@ -157,7 +164,8 @@ class BookCopyCreateView(LibraryGuestTemplateView):
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
         if form.is_valid():
-            form.save()
+            book = form.save()
+            messages.success(self.request, "\"" + book.title + "\" has been added to your library")
             return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
         else:
             return HttpResponseForbidden()
@@ -185,6 +193,7 @@ class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     template_name = 'libraries/book_copy_delete.html'
 
     def get_success_url(self):
+        messages.success(self.request, "\"" + self.object.title + "\" has been deleted from your library")
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
@@ -194,6 +203,7 @@ class BookCopyCommentUpdateView(BaseUpdateView, LibraryOwnerTemplateView):
     template_name = 'libraries/book_copy_comment.html'
 
     def get_success_url(self):
+        messages.success(self.request, "Comment updated")
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
@@ -229,10 +239,8 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
         lending = form.save(commit=False)
         lending.copy = get_object_or_404(BookCopy, pk=self.kwargs['pk'])
         lending.save()
+        messages.success(self.request, "\"" + lending.copy.book.title + "\" lent")
         return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
-
-    def get_success_url(self):
-        return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
 class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
@@ -252,6 +260,7 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
         lending.is_completed = True
         lending.return_date = datetime.now()
         lending.save()
+        messages.success(self.request, "\"" + lending.copy.book.title + "\" returned")
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
@@ -291,8 +300,9 @@ class OutsideLendingConfirmView(LibraryOwnerTemplateView):
         context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
         return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self):
         book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
         lending = Lending.objects.create(copy=book_copy, borrower=self.library)
         lending.save()
+        messages.success(self.request, "\"" + book_copy.book.title + "\" has been borrowed from outside")
         return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
