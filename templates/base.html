@@ -24,6 +24,7 @@
 		      <a href="{% url 'home' %}" class="brand-logo"><i class="material-icons left">library_books</i>Home Library</a>
 		      <ul id="nav-mobile" class="right hide-on-med-and-down">
 			      {% if user.is_authenticated %}
+              <li><a href="{% url 'book_copy_create' user.userprofile.home_library.pk %}">Add Book</a></li>
 	            <li><a class="dropdown-button" data-activates="libraries-dropdown">Library<i class="material-icons right">arrow_drop_down</i></a></li>
 				      <li><a href="{% url 'library_management' user.userprofile.home_library.pk %}">Manage</a></li>
 							<li><a href="{% url 'logout' %}" class="waves-effect waves-light btn z-depth-2">Log out</a></li>
