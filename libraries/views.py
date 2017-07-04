@@ -16,7 +16,7 @@ from accounts.models import UserProfile
 from books.forms import BookCopyForm
 from libraries.models import BookCopy
 from .forms import SendInvitationForm
-from .models import Library, Invitation, Lending
+from .models import Library, Invitation, Lending, Reading
 
 
 class LibraryGuestTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -305,3 +305,52 @@ class OutsideLendingConfirmView(LibraryOwnerTemplateView):
         lending.save()
         messages.success(self.request, "\"" + book_copy.book.title + "\" has been borrowed from outside")
         return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+
+
+class BookCopyKeeperView(LibraryGuestTemplateView):
+
+    def __init__(self):
+        self.book_copy = None
+        self.reader = None
+        super(BookCopyKeeperView, self).__init__()
+
+    def test_func(self):
+        if not super(BookCopyKeeperView, self).test_func():
+            return False
+
+        self.reader = self.request.user.userprofile
+        self.book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
+
+        return self.book_copy.is_kept_by(self.reader)
+
+
+class ReadingCreateView(BookCopyKeeperView):
+
+    def post(self, request, pk):
+        try:
+            Reading.objects.get(copy=self.book_copy, is_completed=False)
+            return HttpResponseForbidden()
+        except Reading.DoesNotExist:
+            reading = Reading.objects.create(copy=self.book_copy, reader=self.reader)
+            reading.save()
+            messages.success(self.request, "You have started reading \"" + self.book_copy.book.title + "\"")
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+
+
+class ReadingDeleteView(BookCopyKeeperView):
+
+    def test_func(self):
+        if not super(BookCopyKeeperView, self).test_func():
+            return False
+
+        return Reading.objects.filter(copy=self.book_copy, is_completed=False).exists()
+
+    def post(self, request, pk):
+        try:
+            reading = Reading.objects.get(copy=self.book_copy, reader=self.reader)
+            reading.end_date = timezone.now()
+            reading.is_completed = True
+            messages.success(self.request, "You have ended reading \"" + book_copy.book.title + "\"")
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+        except Reading.DoesNotExist:
+            return HttpResponseForbidden()

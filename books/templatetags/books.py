@@ -3,7 +3,7 @@ from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
 
 from books.models import Book
-from libraries.models import BookCopy, Lending
+from libraries.models import BookCopy, Lending, Reading
 
 register = Library()
 
@@ -27,6 +27,11 @@ def render_book_copy(copy: BookCopy, user: User, **kwargs):
     context['is_owner'] = library == user.userprofile.home_library
     is_book_owner = copy.library == user.userprofile.home_library
     context['is_book_owner'] = is_book_owner
+    context['is_read'] = Reading.objects.filter(copy=copy)
+    is_kept_by_user = copy.is_kept_by(user.userprofile)
+    context['is_kept_by_user'] = is_kept_by_user
+    if is_kept_by_user:
+        context['is_read'] = Reading.objects.filter(copy=copy, reader=user.userprofile, is_completed=False).exists()
     try:
         lending = copy.lending_set.get(is_completed=False)
         context['lending'] = lending

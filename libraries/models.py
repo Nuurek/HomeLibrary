@@ -59,6 +59,16 @@ class BookCopy(models.Model):
     def __str__(self):
         return str(self.book) + ' in ' + str(self.library)
 
+    def is_kept_by(self, user_profile: UserProfile):
+        if not self.library:
+            return True
+        is_owner = self.library.owner == user_profile
+        is_lent = Lending.objects.filter(copy=self, is_completed=False).exists()
+        return (
+            (is_owner and not is_lent) or
+            (Lending.objects.filter(copy=self, borrower=user_profile.home_library, is_completed=False))
+        )
+
 
 class Lending(models.Model):
     copy = models.ForeignKey(BookCopy, on_delete=models.CASCADE)

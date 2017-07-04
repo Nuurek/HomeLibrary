@@ -12,8 +12,8 @@
 	    </a>
 		{% endif %}
 
-		{% if is_book_owner or borrowed %}
-			<form method="post" action="">
+		{% if is_owner and is_kept_by_user %}
+			<form method="post" action="{% url 'reading_create' id %}">
 				{% csrf_token %}
 				<button
 				    type="submit" class="btn-floating btn waves-effect waves-light tooltipped"
