@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, View
 from django.views.generic.edit import BaseDeleteView, BaseUpdateView, BaseCreateView, BaseFormView
 from django.views.generic.list import BaseListView
 
@@ -281,7 +281,7 @@ class OutsideLendingCreateView(LibraryOwnerTemplateView):
             return HttpResponseForbidden()
 
 
-class OutsideLendingConfirmView(LibraryOwnerTemplateView):
+class OutsideLendingConfirmView(LibraryOwnerTemplateView, View):
     template_name = 'libraries/outside_lending_confirm.html'
 
     def test_func(self):
@@ -307,7 +307,7 @@ class OutsideLendingConfirmView(LibraryOwnerTemplateView):
         return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
 
 
-class BookCopyKeeperView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class BookCopyKeeperView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def __init__(self):
         self.book_copy = None
