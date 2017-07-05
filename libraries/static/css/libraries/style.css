@@ -1,0 +1,10 @@
+.title {
+  display: inline; }
+
+.chips {
+  border: none;
+  margin: 0; }
+  .chips .chip {
+    cursor: pointer; }
+
+/*# sourceMappingURL=style.css.map */
