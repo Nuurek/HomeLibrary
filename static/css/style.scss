@@ -23,11 +23,18 @@ body {
     color: $primary-color-light;
   }
 
+
+
   .book-card {
 
     form {
       display: inline-block;
     }
+
+    .card-image {
+      width: 30%;
+    }
+
   }
 ;
 }

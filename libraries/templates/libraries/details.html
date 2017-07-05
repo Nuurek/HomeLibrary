@@ -6,12 +6,11 @@
 	<div id="book-search" class="section">
 		<div class="row">
 			{% if is_owner %}
-				<div class="col s12">
+				<div class="col s12 xl4 offset-xl2 input-field">
 					<a href="{% url 'book_copy_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add book</a>
-					<a href="{% url 'outside_lending_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add lending</a>
-
 				</div>
-				<div class="col s12">
+				<div class="col s12 xl4 offset-xl2 input-field">
+					<a href="{% url 'outside_lending_create' library_pk %}" class="waves-effect waves-light btn"><i class="material-icons left">library_add</i>Add lending</a>
 				</div>
 			{% endif %}
 			<div class="col s12 m8 offset-m2 l10 offset-l1">
