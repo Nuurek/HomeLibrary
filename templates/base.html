@@ -12,21 +12,30 @@
     {% block stylesheets %}{% endblock %}
   </head>
   <body>
-    <div class="navbar-fixed">
-      {% if user.is_authenticated %}
-	      <ul id="libraries-dropdown" class="dropdown-content">
-	        <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your library</a></li>
-		      <li><a href="{% url 'library_list' user.userprofile.home_library.pk %}">All libraries</a></li>
-	      </ul>
-      {% endif %}
-		  <nav>
+      <nav>
 		    <div class="nav-wrapper z-depth-1">
+          <a href="#" data-activates="mobile-nav" class="button-collapse"><i class="material-icons">menu</i></a>
 		      <a href="{% url 'home' %}" class="brand-logo"><i class="material-icons left">library_books</i>Home Library</a>
-		      <ul id="nav-mobile" class="right hide-on-med-and-down">
+		      <ul id="nav" class="right hide-on-med-and-down">
 			      {% if user.is_authenticated %}
-              <li><a href="{% url 'book_copy_create' user.userprofile.home_library.pk %}">Add Book</a></li>
-	            <li><a class="dropdown-button" data-activates="libraries-dropdown">Library<i class="material-icons right">arrow_drop_down</i></a></li>
-				      <li><a href="{% url 'library_management' user.userprofile.home_library.pk %}">Manage</a></li>
+              <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your Library</a></li>
+		          <li><a href="{% url 'library_list' user.userprofile.home_library.pk %}">All Libraries</a></li>
+				      <li><a href="{% url 'book_copy_create' user.userprofile.home_library.pk %}">Add Book</a></li>
+	            <li><a href="{% url 'library_management' user.userprofile.home_library.pk %}">Manage</a></li>
+							<li><a href="{% url 'logout' %}" class="waves-effect waves-light btn z-depth-2">Log out</a></li>
+			      {% else %}
+			        <li><a href="{% url 'sign_up' %}" class="waves-effect waves-light btn z-depth-2">Sign up</a></li>
+				      <li>Already have an account?</li>
+			        <li><a href="{% url 'login' %}" class="waves-effect waves-light btn z-depth-2">Log in</a></li>
+			      {% endif %}
+		      </ul>
+
+		      <ul id="mobile-nav" class="side-nav center-align">
+			      {% if user.is_authenticated %}
+              <li><a href="{% url 'library_details' user.userprofile.home_library.pk %}">Your Library</a></li>
+		          <li><a href="{% url 'library_list' user.userprofile.home_library.pk %}">All Libraries</a></li>
+				      <li><a href="{% url 'book_copy_create' user.userprofile.home_library.pk %}">Add Book</a></li>
+	            <li><a href="{% url 'library_management' user.userprofile.home_library.pk %}">Manage</a></li>
 							<li><a href="{% url 'logout' %}" class="waves-effect waves-light btn z-depth-2">Log out</a></li>
 			      {% else %}
 			        <li><a href="{% url 'sign_up' %}" class="waves-effect waves-light btn z-depth-2">Sign up</a></li>
@@ -36,7 +45,6 @@
 		      </ul>
 		    </div>
 		  </nav>
-    </div>
     <div class="container center-align">
       {% block content %}{% endblock %}
     </div>

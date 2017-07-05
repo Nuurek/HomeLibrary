@@ -4,7 +4,7 @@
 
 {% block content %}
 	<br>
-	<div class="row valign-wrapper">
+	<div class="row">
 		<div class="col s12 l7 z-depth-1">
 			<h5>Currently reading</h5>
 			{% if currently_read_books %}
@@ -65,16 +65,14 @@
 		{% if lent_books %}
 			<div class="col s12 container z-depth-1">
 				<h5>Lent books</h5>
-				<div class="">
-					{% for copy in lent_books %}
-						<div class="row">
-							<div class="col s12 xl8 offset-xl2">
-								{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
-							</div>
-						</div>
-					{% endfor %}
-				</div>
 
+				{% for copy in lent_books %}
+					<div class="row">
+						<div class="col s12 xl8 offset-xl2">
+							{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
+						</div>
+					</div>
+				{% endfor %}
 			</div>
 		{% endif %}
 	</div>
@@ -83,16 +81,13 @@
 		{% if lent_books %}
 			<div class="col s12 container z-depth-1">
 				<h5>Borrowed books</h5>
-				<div class="">
-					{% for copy in borrowed_books %}
-						<div class="row">
-							<div class="col s12 xl8 offset-xl2">
-								{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
-							</div>
+				{% for copy in borrowed_books %}
+					<div class="row">
+						<div class="col s12 xl8 offset-xl2">
+							{% render_book_copy copy user clean=True library=user.userprofile.home_library%}
 						</div>
-					{% endfor %}
-				</div>
-
+					</div>
+				{% endfor %}
 			</div>
 		{% endif %}
 	</div>

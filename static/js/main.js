@@ -70,5 +70,6 @@ function setUpSearch(booksPath, initialSearch=true) {
 
 $(document).ready(function() {
     $('select').material_select();
+    $('.button-collapse').sideNav();
     addButtonTooltip();
 });

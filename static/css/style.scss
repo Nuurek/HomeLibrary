@@ -23,8 +23,6 @@ body {
     color: $primary-color-light;
   }
 
-
-
   .book-card {
 
     form {
@@ -34,9 +32,15 @@ body {
     .card-image {
       width: 30%;
     }
-
   }
-;
+
+  .side-nav {
+    background-color: $primary-color;
+
+    a {
+      color: white;
+    }
+  }
 }
 
 
