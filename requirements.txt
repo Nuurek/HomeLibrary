@@ -3,3 +3,5 @@ django-widget-tweaks==1.4.1
 Pillow==4.1.1
 google-api-python-client==1.6.2
 requests==2.18.1
+dj-database-url==0.4.2
+gunicorn==19.7.1
