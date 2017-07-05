@@ -1,0 +1,1 @@
+setUpSearch('book/list');
