@@ -4,7 +4,7 @@ import dj_database_url
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = bool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS += (
     'ai-home-library.herokuapp.com',
