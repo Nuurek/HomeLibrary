@@ -1,5 +1,5 @@
-Django
-django-widget-tweaks
-Pillow
-google-api-python-client
-requests
+Django==1.11.2
+django-widget-tweaks==1.4.1
+Pillow==4.1.1
+google-api-python-client==1.6.2
+requests==2.18.1
