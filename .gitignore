@@ -21,3 +21,4 @@ db.sqlite3
 *.css
 *.css.map
 google_books_api_key.json
+.env
