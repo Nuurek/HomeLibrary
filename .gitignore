@@ -18,7 +18,6 @@ build/
 tests/report/
 db.sqlite3
 .idea
-*.css
 *.css.map
 google_books_api_key.json
 .env
