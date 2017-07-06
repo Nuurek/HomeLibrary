@@ -1,1 +1,1 @@
-web: gunicorn home_library.wsgi
+web: gunicorn home_library.wsgi --enable-stdio-inheritance
