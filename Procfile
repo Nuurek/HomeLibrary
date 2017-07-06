@@ -1,1 +1,1 @@
-web: gunicorn home_library.wsgi --log-file -
+web: gunicorn home_library.wsgi

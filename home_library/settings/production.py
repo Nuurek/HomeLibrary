@@ -6,10 +6,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = bool(os.environ.get('DEBUG'))
 
-ALLOWED_HOSTS += (
-    'ai-home-library.herokuapp.com',
-)
-
 database_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES = {
     'default': database_from_env
@@ -29,3 +25,8 @@ STATICFILES_STORAGE = 'custom_storages.StaticStorage'
 MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = " https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
+ALLOWED_HOSTS += (
+    'ai-home-library.herokuapp.com',
+    AWS_S3_CUSTOM_DOMAIN,
+)
