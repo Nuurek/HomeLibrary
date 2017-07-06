@@ -1,6 +1,10 @@
 from django.utils.html import strip_tags
 from googleapiclient import discovery
 from googleapiclient.http import HttpRequest
+import urllib.request
+import urllib.parse
+import json
+from django.conf import settings
 from httplib2 import Http
 from typing import List
 
@@ -9,22 +13,25 @@ from .models import Book
 
 class GoogleBooksAPI(object):
 
-    def __init__(self):
-        self.api = discovery.build('books', 'v1')
-
     def search(self, query: str):
         query = query.strip()
         if len(query) == 0:
             return []
         query = query.replace(' ', '+')
 
-        request: HttpRequest = self.api.volumes().list(
-            q=query, printType='books', projection='full', maxResults=20
-        )
-        http = Http()
-        response = request.execute(http=http)
+        url = 'https://www.googleapis.com/books/v1/volumes'
+        parameters = urllib.parse.urlencode({
+            'q': query,
+            'printType': 'books',
+            'projection': 'full',
+            'maxResults': '20',
+            'key': settings.GOOGLE_BOOKS_API_KEY,
+        })
+        request = urllib.request.Request(url + '?' + parameters)
+        response = urllib.request.urlopen(request)
+        data = json.load(response)
 
-        books = response['items']
+        books = data['items']
         books = [self.api_response_to_tag_dict(book) for book in books]
         books = [book for book in books if book is not None]
         books = self.filter_existing_books(books)
