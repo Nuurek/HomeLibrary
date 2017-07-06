@@ -163,8 +163,8 @@ class BookCopyCreateView(LibraryGuestTemplateView):
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
         if form.is_valid():
-            book = form.save()
-            messages.success(self.request, "\"" + book.title + "\" has been added to your library")
+            copy: BookCopy = form.save()
+            messages.success(self.request, "\"" + copy.book.title + "\" has been added to your library")
             return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
         else:
             return HttpResponseForbidden()
@@ -192,7 +192,7 @@ class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     template_name = 'libraries/book_copy_delete.html'
 
     def get_success_url(self):
-        messages.success(self.request, "\"" + self.object.title + "\" has been deleted from your library")
+        messages.success(self.request, "\"" + self.object.book.title + "\" has been deleted from your library")
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 

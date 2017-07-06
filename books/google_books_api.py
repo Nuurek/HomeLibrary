@@ -13,13 +13,15 @@ from .models import Book
 
 class GoogleBooksAPI(object):
 
+    def __init__(self):
+        self.url = 'https://www.googleapis.com/books/v1/volumes'
+
     def search(self, query: str):
         query = query.strip()
         if len(query) == 0:
             return []
         query = query.replace(' ', '+')
 
-        url = 'https://www.googleapis.com/books/v1/volumes'
         parameters = urllib.parse.urlencode({
             'q': query,
             'printType': 'books',
@@ -27,7 +29,7 @@ class GoogleBooksAPI(object):
             'maxResults': '20',
             'key': settings.GOOGLE_BOOKS_API_KEY,
         })
-        request = urllib.request.Request(url + '?' + parameters)
+        request = urllib.request.Request(self.url + '?' + parameters)
         response = urllib.request.urlopen(request)
         data = json.load(response)
 
@@ -39,10 +41,10 @@ class GoogleBooksAPI(object):
         return books
 
     def get(self, volume_id):
-        request: HttpRequest = self.api.volumes().get(volumeId=volume_id)
-        http = Http()
-        book = request.execute(http=http)
-        return self.api_response_to_tag_dict(book)
+        request = urllib.request.Request(self.url + '/' + volume_id)
+        response = urllib.request.urlopen(request)
+        data = json.load(response)
+        return self.api_response_to_tag_dict(data)
 
     @staticmethod
     def api_response_to_tag_dict(api_book):

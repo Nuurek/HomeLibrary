@@ -2,10 +2,13 @@
 
 {% block card_actions %}
 	{{ block.super }}
-	<input title="google_id" name="google_id" type="text" hidden value="{{ id }}">
-  <button
-		  type="submit" class="btn-floating btn waves-effect waves-light green tooltipped" data-tooltip="Add to our catalog"
-  >
-	  <i class="material-icons z-depth-2">playlist_add</i>
-  </button>
+	<form method="post">
+		{% csrf_token %}
+		<input title="google_id" name="google_id" type="text" hidden value="{{ id }}">
+	  <button
+			  type="submit" class="btn-floating btn waves-effect waves-light green tooltipped" data-tooltip="Add to our catalog"
+	  >
+		  <i class="material-icons z-depth-2">playlist_add</i>
+	  </button>
+	</form>
 {% endblock %}
