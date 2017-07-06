@@ -25,10 +25,12 @@ class UserProfile(models.Model):
             })
         })
         self.user.email_user(subject, message)
+        print("Sent confirmation code to " + self.user.username)
 
     def activate_user(self):
         self.user.is_active = True
         self.user.save()
+        print("Activated account for " + self.user.username)
 
     def books_per_month(self):
         books_read = self.reading_set.filter(is_completed=True).count()
