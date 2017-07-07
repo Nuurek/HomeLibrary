@@ -43,7 +43,8 @@ class UserProfile(models.Model):
         pages = self.reading_set.filter(is_completed=True).aggregate(Sum(key))[key + '__sum']
         if pages:
             period = self.get_period_since_join()
-            return int(pages / period.days)
+            days = min(period.days, 1)
+            return int(pages / days)
         else:
             return 0
 

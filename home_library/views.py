@@ -16,7 +16,7 @@ class HomeView(TemplateView):
 
         finished_readings = Reading.objects.filter(is_completed=True)
         pages_key = 'copy__book__page_count'
-        context['pages_read'] = finished_readings.aggregate(Sum(pages_key))[pages_key + '__sum']
+        context['pages_read'] = finished_readings.aggregate(Sum(pages_key))[pages_key + '__sum'] or 0
 
         context['books_read'] = finished_readings.count()
 
