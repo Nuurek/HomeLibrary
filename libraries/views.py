@@ -160,6 +160,10 @@ class LibrariesListView(ListView):
 class BookCopyCreateView(LibraryGuestTemplateView):
     template_name = 'libraries/book_copy_create.html'
 
+    def get(self, request, *args, **kwargs):
+        self.request.session['copy_after_book_creation'] = True
+        return super(BookCopyCreateView, self).get(request, *args, **kwargs)
+
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': self.library.pk})
         if form.is_valid():
@@ -180,7 +184,7 @@ class BookCopiesListView(BaseListView, LibraryGuestTemplateView):
         book_copies = BookCopy.objects.filter(
             Q(library=self.library) | Q(Q(lending__borrower=self.library) & Q(lending__is_completed=False))
         ).distinct().filter(
-            Q(book__title__contains=query) | Q(book__author__contains=query)
+            Q(book__title__icontains=query) | Q(book__author__icontains=query)
         ).order_by(
             'book__title'
         )
@@ -192,7 +196,8 @@ class BookCopyDeleteView(BaseDeleteView, LibraryOwnerTemplateView):
     template_name = 'libraries/book_copy_delete.html'
 
     def get_success_url(self):
-        messages.success(self.request, "\"" + self.object.book.title + "\" has been deleted from your library")
+        if self.request.session.get('copy_after_book_creation', True):
+            messages.success(self.request, "\"" + self.object.book.title + "\" has been deleted from your library")
         return reverse_lazy('library_details', kwargs={'library_pk': self.library.pk})
 
 
@@ -269,6 +274,10 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
 class OutsideLendingCreateView(LibraryOwnerTemplateView):
     template_name = 'libraries/outside_lending_create.html'
 
+    def get(self, request, *args, **kwargs):
+        self.request.session['copy_after_book_creation'] = False
+        return super(OutsideLendingCreateView, self).get(request, *args, **kwargs)
+
     def post(self, request):
         form = BookCopyForm({'book': request.POST['book'], 'library': None})
         if form.is_valid():
@@ -281,7 +290,7 @@ class OutsideLendingCreateView(LibraryOwnerTemplateView):
             return HttpResponseForbidden()
 
 
-class OutsideLendingConfirmView(LibraryOwnerTemplateView, View):
+class OutsideLendingConfirmView(LibraryOwnerTemplateView):
     template_name = 'libraries/outside_lending_confirm.html'
 
     def test_func(self):
@@ -299,8 +308,8 @@ class OutsideLendingConfirmView(LibraryOwnerTemplateView, View):
         context['book_copy'] = BookCopy.objects.get(pk=self.kwargs['pk'])
         return context
 
-    def post(self):
-        book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
+    def post(self, request, *args, **kwargs):
+        book_copy = BookCopy.objects.get(pk=kwargs.pop('pk'))
         lending = Lending.objects.create(copy=book_copy, borrower=self.library)
         lending.save()
         messages.success(self.request, "\"" + book_copy.book.title + "\" has been borrowed from outside")

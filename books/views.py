@@ -66,8 +66,12 @@ class BookPreviewView(LibraryGuestTemplateView):
                 book.cover = cover_preview.cover
                 book.save()
                 cover_preview.delete()
-                BookCopy.objects.create(library=self.library, book=book).save()
-                messages.success(self.request, "\"" + book.title + "\" has been added to the system and your library")
+                message = "\"{}\" has been added to the system".format(book.title)
+                if self.request.session['copy_after_book_creation']:
+                    message += " and your library"
+                    BookCopy.objects.create(library=self.library, book=book).save()
+                self.request.session.pop('copy_after_book_creation')
+                messages.success(self.request, message)
             else:
                 return HttpResponseForbidden()
             return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
@@ -116,7 +120,7 @@ class BookListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         query = self.request.GET['query']
-        books = Book.objects.filter(Q(title__contains=query) | Q(author__contains=query)).order_by('title')
+        books = Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query)).order_by('title')
         return books
 
 
