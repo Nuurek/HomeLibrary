@@ -271,6 +271,14 @@ class LendingDeleteView(BaseDeleteView, LibraryGuestTemplateView):
         lending.is_completed = True
         lending.return_date = timezone.now()
         lending.save()
+
+        try:
+            reading = Reading.objects.get(copy=lending.copy, is_completed=False)
+            reading.is_completed = True
+            reading.save()
+        except Reading.DoesNotExist:
+            pass
+
         messages.success(self.request, "\"" + lending.copy.book.title + "\" returned")
         return HttpResponseRedirect(self.get_success_url())
 
