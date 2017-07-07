@@ -221,12 +221,19 @@ class LendingCreateView(BaseCreateView, LibraryOwnerTemplateView):
             return False
 
         book_copy = BookCopy.objects.get(pk=self.kwargs['pk'])
-        try:
-            Lending.objects.get(copy=book_copy, is_completed=False)
-            return False
-        except Lending.DoesNotExist:
-            return True
 
+        if Lending.objects.filter(copy=book_copy, is_completed=False).exists():
+            return False
+
+        return True
+
+    def get(self, request, *args, **kwargs):
+        book_copy = get_object_or_404(BookCopy, pk=self.kwargs['pk'])
+        if Reading.objects.filter(copy=book_copy, is_completed=False).exists():
+            messages.info(self.request, "You can't lend a book that you're still reading")
+            return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
+        return super(LendingCreateView, self).get(request, *args, **kwargs)
+        
     def get_form(self, form_class=None):
         form = super(LendingCreateView, self).get_form(form_class)
         form.fields['borrower'].empty_label = "Outside the system"
