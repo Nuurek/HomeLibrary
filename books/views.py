@@ -67,7 +67,7 @@ class BookPreviewView(LibraryGuestTemplateView):
                 book.save()
                 cover_preview.delete()
                 BookCopy.objects.create(library=self.library, book=book).save()
-                messages.success(self.request, "\"" + book.title + "has been added to the system and your library")
+                messages.success(self.request, "\"" + book.title + "\" has been added to the system and your library")
             else:
                 return HttpResponseForbidden()
             return HttpResponseRedirect(reverse_lazy('library_details', kwargs={'library_pk': self.library.pk}))
