@@ -46,6 +46,7 @@ class Invitation(models.Model):
             }),
         })
         send_mail(subject, message, self.library.owner.user.email, [self.email, ])
+        print("Invitation mail sent from {} to {}".format(self.library.name, self.email))
 
     def __str__(self):
         return "Invitation to " + self.library.name + " for " + self.email
